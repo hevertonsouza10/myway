@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "myway",
+			"path": "."
+		},
+		{
+			"name": "binoma",
+			"path": "../../../Downloads/binoma"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "myway"
+	}
+}
