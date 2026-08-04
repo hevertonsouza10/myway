@@ -22,6 +22,7 @@ function clamp(value: number, min: number, max: number) {
 
 export function CinematicTestimonials({ testimonials }: CinematicTestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const scrollFrame = useRef(0);
@@ -39,7 +40,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
         video.pause();
       }
     });
-  }, [activeIndex]);
+  }, [activeIndex, isMuted]);
 
   useEffect(() => () => {
     if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
@@ -63,6 +64,15 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     const nextIndex = clamp(index, 0, lastIndex);
     track.scrollTo({ left: nextIndex * track.clientWidth, behavior: "smooth" });
     setActiveIndex(nextIndex);
+  }
+
+  function toggleMute(index: number) {
+    const video = videoRefs.current[index];
+    if (!video) return;
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    if (!nextMuted) video.volume = 1;
+    setIsMuted(nextMuted);
   }
 
   function openFullscreen(video: HTMLVideoElement) {
@@ -125,6 +135,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
           >
             <div className="cinema-video-shell">
               <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} />
+              <button className="cinema-volume-control" type="button" onClick={() => toggleMute(index)} aria-label={isMuted ? "Ativar som do depoimento" : "Silenciar depoimento"}>{isMuted ? "Ativar som" : "Silenciar"}</button>
               <button className="cinema-fullscreen-control" type="button" onClick={() => { const video = videoRefs.current[index]; if (video) openFullscreen(video); }} aria-label="Abrir depoimento em tela cheia">Tela cheia</button>
             </div>
             <div className="cinema-card-copy">
