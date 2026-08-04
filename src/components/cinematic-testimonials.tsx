@@ -23,10 +23,23 @@ function clamp(value: number, min: number, max: number) {
 export function CinematicTestimonials({ testimonials }: CinematicTestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const scrollFrame = useRef(0);
   const dragStartX = useRef<number | null>(null);
   const dragStartScroll = useRef(0);
   const lastIndex = Math.max(testimonials.length - 1, 0);
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+      if (index === activeIndex) {
+        video.muted = true;
+        void video.play().catch(() => undefined);
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeIndex]);
 
   useEffect(() => () => {
     if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
@@ -117,7 +130,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
             aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.name ?? testimonial.title ?? "Depoimento"}`}
           >
             <div className="cinema-video-shell">
-              <video controls playsInline preload="metadata" src={testimonial.src} onClick={handleVideoClick} />
+              <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} onClick={handleVideoClick} />
             </div>
             <div className="cinema-card-copy">
               <strong>{testimonial.name ?? testimonial.title ?? "Depoimento"}</strong>
