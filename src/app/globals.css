@@ -12107,4 +12107,10 @@ body {
   letter-spacing: -0.055em !important;
   line-height: 0.95 !important;
   text-align: center !important;
-}`r`n.award-home .award-partner-strip .partner-icon::before {`r`n  content: "+";`r`n  font-size: 1.2rem;`r`n  font-weight: 300;`r`n}`r`n
+}
+
+.award-home .award-partner-strip .partner-icon::before {
+  content: "+";
+  font-size: 1.2rem;
+  font-weight: 300;
+}
