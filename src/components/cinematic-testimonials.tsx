@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent, PointerEvent } from "react";
+import type { PointerEvent } from "react";
 
 export type Testimonial = {
   title?: string;
@@ -75,12 +75,6 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     mobileVideo.webkitEnterFullscreen?.();
   }
 
-  function handleVideoClick(event: MouseEvent<HTMLVideoElement>) {
-    const video = event.currentTarget;
-    if (document.fullscreenElement === video) return;
-    openFullscreen(video);
-  }
-
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const track = trackRef.current;
     if (!track) return;
@@ -130,7 +124,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
             aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.name ?? testimonial.title ?? "Depoimento"}`}
           >
             <div className="cinema-video-shell">
-              <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} onClick={handleVideoClick} />
+              <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} />
               <button className="cinema-fullscreen-control" type="button" onClick={() => { const video = videoRefs.current[index]; if (video) openFullscreen(video); }} aria-label="Abrir depoimento em tela cheia">Tela cheia</button>
             </div>
             <div className="cinema-card-copy">
