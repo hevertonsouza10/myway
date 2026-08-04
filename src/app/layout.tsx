@@ -20,6 +20,11 @@ const aktiv = localFont({
       weight: "700",
       style: "normal",
     },
+    {
+      path: "../../marca/2. SITE MW/Tipografias/Aktiv/AktivGrotesk-XBold.ttf",
+      weight: "800",
+      style: "normal",
+    },
   ],
   variable: "--font-aktiv",
 });
@@ -43,7 +48,7 @@ const binoma = localFont({
 export const metadata: Metadata = {
   title: "MyWay | Lidere suas escolhas",
   description:
-    "Treinamentos para transformar escolhas, relações e resultados.",
+    "Treinamento presencial para transformar escolhas, relações e resultados.",
 };
 
 export default function RootLayout({

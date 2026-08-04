@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -49,7 +49,7 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
   }
 
   return (
-    <section
+    <section id={variant === "institutional" ? "inicio" : undefined}
       className={`hero hero-cinema ${isReady ? "is-ready" : ""}`}
       onPointerMove={handlePointerMove}
     >
@@ -122,24 +122,26 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
         <span className="discover-kicker">Iniciar</span>
         <span className="discover-label">Descobrir o caminho</span>
         <span className="discover-arrow" aria-hidden="true">
-          <i>↓</i>
+          <i>&#8595;</i>
         </span>
       </Link>
 
-      <button
-        className="sound-control"
-        type="button"
-        onClick={toggleSound}
-        aria-label={isMuted ? "Ativar som do vídeo" : "Desativar som do vídeo"}
-        aria-pressed={!isMuted}
-      >
-        <span className={`sound-bars ${isMuted ? "is-muted" : ""}`} aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span>{isMuted ? "Som off" : "Som on"}</span>
-      </button>
+      {variant !== "institutional" ? (
+        <button
+          className="sound-control"
+          type="button"
+          onClick={toggleSound}
+          aria-label={isMuted ? "Ativar som do vídeo" : "Desativar som do vídeo"}
+          aria-pressed={!isMuted}
+        >
+          <span className={`sound-bars ${isMuted ? "is-muted" : ""}`} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>{isMuted ? "Som off" : "Som on"}</span>
+        </button>
+      ) : null}
 
       <div className="hero-progress" aria-hidden="true">
         <span />

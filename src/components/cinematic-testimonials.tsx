@@ -1,22 +1,19 @@
-﻿"use client";
+"use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import type { MouseEvent, PointerEvent } from "react";
 
-type Testimonial = {
-  title: string;
-  context: string;
-  story: string;
+export type Testimonial = {
+  title?: string;
+  context?: string;
+  story?: string;
+  name?: string;
+  company?: string;
   src: string;
 };
 
 type CinematicTestimonialsProps = {
-  testimonials: Testimonial[];
-};
-
-type TestimonialStyle = React.CSSProperties & {
-  "--testimonial-height"?: string;
-  "--cinema-track-x"?: string;
+  testimonials: readonly Testimonial[];
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -25,216 +22,120 @@ function clamp(value: number, min: number, max: number) {
 
 export function CinematicTestimonials({ testimonials }: CinematicTestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
-  const [trackX, setTrackX] = useState("0%");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-  const active = testimonials[activeIndex] ?? testimonials[0];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const scrollFrame = useRef(0);
+  const dragStartX = useRef<number | null>(null);
+  const dragStartScroll = useRef(0);
   const lastIndex = Math.max(testimonials.length - 1, 0);
-  const scrollHeight = `${Math.max(testimonials.length, 1) * 100 + 100}svh`;
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !lastIndex) return;
+  useEffect(() => () => {
+    if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
+  }, []);
 
-    let frame = 0;
+  function updateActiveIndex() {
+    const track = trackRef.current;
+    if (!track) return;
 
-    function updateProgress() {
-      frame = 0;
-      const current = containerRef.current;
-      if (!current) return;
-
-      const rect = current.getBoundingClientRect();
-      const scrollable = Math.max(current.scrollHeight - window.innerHeight, 1);
-      const progress = clamp(-rect.top / scrollable, 0, 1);
-      const nextIndex = clamp(Math.round(progress * lastIndex), 0, lastIndex);
-
-      setActiveIndex(nextIndex);
-      setTrackX(`${progress * lastIndex * -100}%`);
-    }
-
-    function requestUpdate() {
-      if (frame) return;
-      frame = window.requestAnimationFrame(updateProgress);
-    }
-
-    updateProgress();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-    };
-  }, [lastIndex]);
-
-  useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (!video || index === playingIndex) return;
-      video.pause();
-    });
-  }, [playingIndex]);
-
-  function goTo(index: number) {
-    const container = containerRef.current;
-    if (!container || !lastIndex) return;
-
-    const next = clamp(index, 0, lastIndex);
-    const targetProgress = next / lastIndex;
-    const top = window.scrollY + container.getBoundingClientRect().top;
-    const scrollable = Math.max(container.scrollHeight - window.innerHeight, 1);
-
-    window.scrollTo({
-      top: top + scrollable * targetProgress,
-      behavior: "smooth",
+    if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
+    scrollFrame.current = window.requestAnimationFrame(() => {
+      const firstCard = track.querySelector<HTMLElement>("[data-testimonial-card]");
+      if (!firstCard) return;
+      setActiveIndex(clamp(Math.round(track.scrollLeft / Math.max(firstCard.offsetWidth, 1)), 0, lastIndex));
     });
   }
 
-  async function playVideo(index: number) {
-    const video = videoRefs.current[index];
-    if (!video) return;
+  function goTo(index: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const nextIndex = clamp(index, 0, lastIndex);
+    track.scrollTo({ left: nextIndex * track.clientWidth, behavior: "smooth" });
+    setActiveIndex(nextIndex);
+  }
 
-    if (playingIndex === index && !video.paused) {
-      video.pause();
-      setPlayingIndex(null);
+  function openFullscreen(video: HTMLVideoElement) {
+    if (video.requestFullscreen) {
+      void video.requestFullscreen();
       return;
     }
 
-    video.muted = false;
-    video.controls = true;
-    setPlayingIndex(index);
-    await video.play();
+    const mobileVideo = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+    mobileVideo.webkitEnterFullscreen?.();
   }
 
-  if (!active) return null;
+  function handleVideoClick(event: MouseEvent<HTMLVideoElement>) {
+    const video = event.currentTarget;
+    if (document.fullscreenElement === video) return;
+    openFullscreen(video);
+  }
+
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    const track = trackRef.current;
+    if (!track) return;
+    dragStartX.current = event.clientX;
+    dragStartScroll.current = track.scrollLeft;
+    track.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    const track = trackRef.current;
+    if (!track || dragStartX.current === null) return;
+    track.scrollLeft = dragStartScroll.current - (event.clientX - dragStartX.current);
+  }
+
+  function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
+    const track = trackRef.current;
+    if (!track || dragStartX.current === null) return;
+    dragStartX.current = null;
+    if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+    updateActiveIndex();
+  }
+
+  if (!testimonials.length) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className="cinema-testimonials"
-      style={
-        {
-          "--testimonial-height": scrollHeight,
-          "--cinema-track-x": trackX,
-        } as TestimonialStyle
-      }
-    >
-      <div className="cinema-panel" aria-live="polite">
-        <div className="cinema-backdrop" aria-hidden="true">
-          {testimonials.map((testimonial, index) => (
-            <video
-              key={testimonial.src}
-              className={index === activeIndex ? "is-active" : undefined}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              src={testimonial.src}
-            />
-          ))}
-        </div>
-
-        <div className="cinema-copy">
-          <p className="eyebrow">Depoimentos MyWay</p>
-          <h3>Relatos em movimento</h3>
-          <span>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(testimonials.length).padStart(2, "0")} · {active.context}
-          </span>
-          <p>{active.story}</p>
-          {activeIndex === lastIndex ? (
-            <Link className="cinema-final-link" href="#contato">
-              Falar com a MyWay
-            </Link>
-          ) : null}
-        </div>
-
-        <div className="cinema-stage">
-          <div className="cinema-horizontal-track">
-            {testimonials.map((testimonial, index) => (
-              <article
-                key={`${testimonial.src}-card`}
-                className={index === activeIndex ? "is-active" : undefined}
-                aria-hidden={index !== activeIndex}
-              >
-                <button
-                  className="cinema-video-shell"
-                  type="button"
-                  onClick={() => playVideo(index)}
-                  aria-label={`Reproduzir ${testimonial.title}`}
-                >
-                  <video
-                    ref={(node) => {
-                      videoRefs.current[index] = node;
-                    }}
-                    playsInline
-                    preload="metadata"
-                    src={testimonial.src}
-                    onPlay={() => setPlayingIndex(index)}
-                    onPause={() => {
-                      if (playingIndex === index) setPlayingIndex(null);
-                    }}
-                  />
-                  <span className={playingIndex === index ? "is-playing" : undefined}>
-                    {playingIndex === index ? "Assistindo" : "Play"}
-                  </span>
-                </button>
-                <div>
-                  <strong>{testimonial.title}</strong>
-                  <p>{testimonial.story}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="cinema-controls" aria-label="Controles dos depoimentos">
-          <button
-            type="button"
-            onClick={() => goTo(activeIndex - 1)}
-            disabled={activeIndex === 0}
-            aria-label="Depoimento anterior"
-          >
-            ‹
-          </button>
-          <div>
-            {testimonials.map((testimonial, index) => (
-              <button
-                key={testimonial.title}
-                type="button"
-                className={index === activeIndex ? "is-active" : undefined}
-                onClick={() => goTo(index)}
-                aria-label={`Ir para ${testimonial.title}`}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => goTo(activeIndex + 1)}
-            disabled={activeIndex === lastIndex}
-            aria-label="Próximo depoimento"
-          >
-            ›
-          </button>
-        </div>
-      </div>
-
-      <div className="cinema-mobile-feed">
+    <div className="cinema-testimonials" role="region" aria-label="Depoimentos de clientes MyWay" aria-roledescription="carrossel">
+      <div
+        ref={trackRef}
+        className="cinema-horizontal-track"
+        onScroll={updateActiveIndex}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowLeft") goTo(activeIndex - 1);
+          if (event.key === "ArrowRight") goTo(activeIndex + 1);
+        }}
+        tabIndex={0}
+        aria-label="Depoimentos em video"
+      >
         {testimonials.map((testimonial, index) => (
-          <article key={`${testimonial.title}-mobile`}>
-            <video controls playsInline preload="metadata" src={testimonial.src} />
-            <div>
-              <span>Depoimento {String(index + 1).padStart(2, "0")}</span>
-              <h3>{testimonial.title}</h3>
-              <p>{testimonial.story}</p>
-              {index === lastIndex ? <Link href="#contato">Falar com a MyWay</Link> : null}
+          <article
+            data-testimonial-card
+            key={testimonial.src}
+            className={index === activeIndex ? "is-active" : undefined}
+            aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.name ?? testimonial.title ?? "Depoimento"}`}
+          >
+            <div className="cinema-video-shell">
+              <video controls playsInline preload="metadata" src={testimonial.src} onClick={handleVideoClick} />
+            </div>
+            <div className="cinema-card-copy">
+              <strong>{testimonial.name ?? testimonial.title ?? "Depoimento"}</strong>
+              <span>{testimonial.company ?? testimonial.context ?? "Cliente MyWay"}</span>
             </div>
           </article>
         ))}
       </div>
+
+      <div className="cinema-controls" aria-label="Controles dos depoimentos">
+        <button type="button" onClick={() => goTo(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Depoimento anterior"></button>
+        <div>
+          {testimonials.map((testimonial, index) => (
+            <button key={testimonial.src} type="button" className={index === activeIndex ? "is-active" : undefined} onClick={() => goTo(index)} aria-label={`Ir para ${testimonial.name ?? testimonial.title ?? "depoimento"}`} aria-current={index === activeIndex ? "true" : undefined} />
+          ))}
+        </div>
+        <button type="button" onClick={() => goTo(activeIndex + 1)} disabled={activeIndex === lastIndex} aria-label="Proximo depoimento"></button>
+      </div>
     </div>
   );
 }
-
-

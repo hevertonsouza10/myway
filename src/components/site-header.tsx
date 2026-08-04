@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -11,11 +11,11 @@ const leadershipLinks = [
 ];
 
 const institutionalLinks = [
-  { href: "#sobre", label: "Sobre", icon: "about" },
-  { href: "#treinamentos", label: "Treinamentos", icon: "training" },
-  { href: "#marcas-parceiras", label: "Marcas", icon: "brands" },
-  { href: "#depoimentos", label: "Depoimentos", icon: "testimonials" },
-  { href: "#unidades", label: "Unidade", icon: "unit" },
+  { href: "#inicio", label: "Início", icon: "about" },
+  { href: "#treinamentos", label: "Treinamento", icon: "training" },
+  { href: "#marcas-parceiras", label: "Parceiros", icon: "brands" },
+  { href: "#resultados", label: "Resultados", icon: "testimonials" },
+  { href: "#unidades", label: "Unidades", icon: "unit" },
 ];
 
 const institutionalMobileLinks = [
@@ -165,14 +165,14 @@ export function SiteHeader({ variant = "leadership" }: SiteHeaderProps) {
             aria-current={activeId === "contato" ? "true" : undefined}
           >
             <span>Contato</span>
-            <i aria-hidden="true">↗</i>
+            <i aria-hidden="true">&#8594;</i>
           </Link>
         </nav>
       </div>
 
       <Link className="header-action" href="/area-do-aluno">
         <span>Área do aluno</span>
-        <i aria-hidden="true">↗</i>
+        <i aria-hidden="true">&#8594;</i>
       </Link>
 
       <nav className="mobile-nav" aria-label="Navegação rápida">
