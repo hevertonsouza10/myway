@@ -12114,3 +12114,32 @@ body {
   font-size: 1.2rem;
   font-weight: 300;
 }
+
+.award-home .award-testimonials .cinema-fullscreen-control {
+  position: absolute;
+  z-index: 5;
+  right: clamp(1.25rem, 4vw, 4rem);
+  bottom: clamp(1.25rem, 4vw, 3rem);
+  display: inline-flex;
+  min-height: 2.6rem;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgb(243 241 237 / 58%);
+  border-radius: 999px;
+  background: rgb(5 7 11 / 48%);
+  color: var(--award-paper);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: background-color 220ms ease, color 220ms ease, transform 220ms ease;
+}
+
+.award-home .award-testimonials .cinema-fullscreen-control:hover,
+.award-home .award-testimonials .cinema-fullscreen-control:focus-visible {
+  background: var(--award-paper);
+  color: var(--award-ink);
+  transform: translateY(-0.15rem);
+}

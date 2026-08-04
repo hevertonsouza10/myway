@@ -131,6 +131,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
           >
             <div className="cinema-video-shell">
               <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} onClick={handleVideoClick} />
+              <button className="cinema-fullscreen-control" type="button" onClick={() => { const video = videoRefs.current[index]; if (video) openFullscreen(video); }} aria-label="Abrir depoimento em tela cheia">Tela cheia</button>
             </div>
             <div className="cinema-card-copy">
               <strong>{testimonial.name ?? testimonial.title ?? "Depoimento"}</strong>
