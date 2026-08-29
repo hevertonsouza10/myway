@@ -2820,6 +2820,7 @@ a {
 .brand-logo img {
   object-fit: contain;
   object-position: left center;
+  mix-blend-mode: difference;
 }
 
 .glass-nav-shell {
@@ -9267,7 +9268,7 @@ body {
   inset: 0 !important;
   display: block !important;
   pointer-events: none !important;
-  opacity: 1 !important;
+  opacity: 0.0525 !important;
   background:
     linear-gradient(180deg, rgb(243 241 237 / 10%), transparent 22%, transparent 78%, rgb(0 0 0 / 18%)),
     linear-gradient(90deg, transparent, rgb(29 91 91 / 18%), transparent) !important;
@@ -9650,10 +9651,14 @@ body {
 .award-home .award-benefits {
   position: relative !important;
   isolation: isolate !important;
-  min-height: auto !important;
+  min-height: 100svh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
   padding: clamp(4.5rem, 6.8vw, 6.5rem) clamp(1.25rem, 6vw, 7rem) clamp(4rem, 5.6vw, 5.8rem) !important;
   overflow: hidden !important;
-  background: var(--award-blue) !important;
+  background: var(--ink) !important;
+  background-image: none !important;
   color: var(--award-paper) !important;
 }
 
@@ -9812,6 +9817,8 @@ body {
 
 @media (max-width: 620px) {
   .award-home .award-benefits {
+    min-height: auto !important;
+    display: block !important;
     padding-top: 3.5rem !important;
     padding-bottom: 3.25rem !important;
   }
@@ -9855,6 +9862,39 @@ body {
   min-height: var(--testimonial-height, 500svh) !important;
   margin: clamp(2rem, 4vw, 3.5rem) calc(clamp(1.25rem, 5vw, 6rem) * -1) 0 !important;
   overflow: visible !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials-heading {
+  display: grid !important;
+  grid-template-columns: minmax(10rem, 0.6fr) minmax(0, 1.4fr) minmax(16rem, 0.7fr) !important;
+  gap: clamp(1.5rem, 4vw, 4rem) !important;
+  align-items: end !important;
+  max-width: 96rem !important;
+  margin: 0 auto clamp(3rem, 6vw, 5rem) !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials-heading .eyebrow {
+  margin: 0 !important;
+  color: rgb(243 241 237 / 70%) !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials-heading h2 {
+  max-width: 12ch !important;
+  margin: 0 !important;
+  color: var(--paper) !important;
+  font-family: var(--font-binoma), sans-serif !important;
+  font-size: clamp(2.8rem, 5vw, 6rem) !important;
+  font-weight: 400 !important;
+  line-height: 0.92 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials-heading > p:last-child {
+  max-width: 24rem !important;
+  margin: 0 0 0.25rem !important;
+  color: rgb(243 241 237 / 68%) !important;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem) !important;
+  line-height: 1.55 !important;
 }
 
 .award-home .award-testimonials .cinema-panel {
@@ -10752,6 +10792,91 @@ body {
   transform: translateY(-0.2rem);
 }
 
+.sound-control,
+.institutional-sound {
+  min-height: 2.9rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgb(243 241 237 / 72%);
+  border-radius: 999px;
+  background: rgb(21 22 27 / 88%);
+  color: var(--award-paper, #f3f1ed);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  backdrop-filter: blur(16px);
+  transition: background-color 220ms ease, color 220ms ease, transform 220ms ease, opacity 900ms ease 950ms;
+}
+
+.sound-control:hover,
+.sound-control:focus-visible,
+.institutional-sound:hover,
+.institutional-sound:focus-visible {
+  background: rgb(243 241 237 / 18%);
+  color: var(--white, #fff);
+}
+
+.sound-control-icon {
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.sound-control,
+.institutional-sound {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 58%);
+  backdrop-filter: none;
+}
+
+.sound-control:hover,
+.sound-control:focus-visible,
+.institutional-sound:hover,
+.institutional-sound:focus-visible {
+  background: transparent;
+  color: var(--white, #fff);
+}
+
+.sound-bars {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  height: 1rem;
+}
+
+.sound-bars i {
+  display: block;
+  width: 2px;
+  height: 100%;
+  border-radius: 999px;
+  background: currentColor;
+  animation: sound-wave 900ms ease-in-out infinite alternate;
+}
+
+.sound-bars i:nth-child(2) {
+  height: 55%;
+  animation-delay: -300ms;
+}
+
+.sound-bars i:nth-child(3) {
+  height: 75%;
+  animation-delay: -600ms;
+}
+
+.sound-bars.is-muted i {
+  height: 2px;
+  animation-play-state: paused;
+}
+
 .institutional-sound-icon {
   display: grid;
   place-items: center;
@@ -11081,6 +11206,37 @@ body {
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: -0.055em;
+}
+
+.training-experience-long-description {
+  max-width: 58rem;
+  margin: clamp(3rem, 6vw, 6rem) 0 0 auto;
+  color: rgb(243 241 237 / 78%);
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.55;
+}
+
+.training-experience-long-description p {
+  max-width: 52rem;
+  margin: 0 0 1.15rem;
+}
+
+.training-experience-long-description .training-experience-lead {
+  max-width: 44rem;
+  margin-bottom: 1.75rem;
+  color: var(--award-paper);
+  font-family: var(--font-binoma), sans-serif;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.training-experience-long-description .training-experience-closing-copy {
+  max-width: 42rem;
+  margin-top: 2rem;
+  color: var(--award-paper);
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  line-height: 1.35;
 }
 
 .training-experience-statement {
@@ -11444,7 +11600,7 @@ body {
     max-width: none;
   }
 }
-/* About chapter: aligned editorial grid with the MyWay symbol watermark. */
+/* About chapter: the MyWay mark becomes a monumental outlined background. */
 .institutional-about-content {
   position: relative;
   isolation: isolate;
@@ -11455,14 +11611,10 @@ body {
   content: "";
   position: absolute;
   z-index: -1;
-  top: 50%;
-  right: -8vw;
-  width: min(56vw, 58rem);
-  aspect-ratio: 1;
-  background: url("/brand/myway-symbol-white.png") center / contain no-repeat;
-  filter: invert(1);
-  opacity: 0.045;
-  transform: translateY(-50%);
+  inset: -22% -74% -22% -74%;
+  background: url("/brand/myway-symbol-white.png") center / auto 148% no-repeat;
+  filter: invert(1) grayscale(1);
+  opacity: 0.065;
   pointer-events: none;
 }
 
@@ -11495,9 +11647,9 @@ body {
 
 @media (max-width: 900px) {
   .institutional-about-content::before {
-    right: -18vw;
-    width: 70vw;
-    opacity: 0.035;
+    inset: -16% -102% -16% -102%;
+    background-size: auto 140%;
+    opacity: 0.06;
   }
 
   .institutional-about-intro {
@@ -11512,10 +11664,9 @@ body {
 
 @media (max-width: 640px) {
   .institutional-about-content::before {
-    top: 36%;
-    right: -28vw;
-    width: 100vw;
-    opacity: 0.03;
+    inset: -12% -170% -12% -42%;
+    background-size: auto 126%;
+    opacity: 0.055;
   }
 
   .institutional-about-intro {
@@ -12071,9 +12222,99 @@ body {
   }
 }
 
+/* Header stays at the hero top; only the mobile dock remains fixed on small screens. */
+.hero-cinema {
+  isolation: auto !important;
+  z-index: 1000 !important;
+}
+
+.site-header,
+.hero-cinema .site-header,
+.award-home .hero-cinema .site-header {
+  position: absolute !important;
+  top: 0;
+  z-index: 2 !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.site-header::before,
+.hero-cinema .site-header::before,
+.award-home .hero-cinema .site-header::before {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Hero divider: a quiet static rule keeps the frame without competing with the scene. */
+.award-home .hero-progress {
+  background: rgb(243 241 237 / 18%) !important;
+  transform: none !important;
+  transition: opacity 700ms ease 600ms !important;
+}
+
+.award-home .hero-progress span {
+  display: none !important;
+}
+
+@media (max-width: 800px) {
+  .award-home .hero-progress {
+    display: none !important;
+  }
+}
+
 @media (max-width: 560px) {
   .award-home .award-social-grid {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/* Full-bleed blue interlude: let the school statement become a section, not a card. */
+.award-home .institutional-about-content {
+  padding-bottom: 0;
+}
+
+.award-home .institutional-about-blue-card {
+  width: 100vw;
+  max-width: none;
+  min-height: clamp(36rem, 72svh, 54rem);
+  margin-right: 0;
+  margin-left: calc(50% - 50vw);
+  margin-bottom: 0;
+  padding: clamp(4rem, 9vw, 9rem) clamp(1.25rem, 9vw, 10rem);
+  align-items: stretch;
+  background: var(--teal) !important;
+}
+
+.award-home .institutional-about-blue-card > div {
+  align-self: start;
+}
+
+.award-home .institutional-about-blue-card h3 {
+  max-width: 9ch;
+  font-size: clamp(4rem, 7.8vw, 9rem);
+}
+
+.award-home .institutional-about-blue-card > p {
+  align-self: end;
+  justify-self: end;
+  margin-bottom: 0.35rem;
+}
+
+@media (max-width: 760px) {
+  .award-home .institutional-about-blue-card {
+    min-height: 38rem;
+    margin-left: calc(50% - 50vw);
+    padding: 4rem 1.5rem 4.5rem;
+  }
+
+  .award-home .institutional-about-blue-card > p {
+    align-self: end;
+    justify-self: start;
   }
 }
 /* Temporary partner mark, ready to be replaced by each real logo. */
@@ -12168,10 +12409,2232 @@ body {
 .award-home .award-testimonials .cinema-volume-control:focus-visible {
   background: var(--award-paper);
   color: var(--award-ink);
+  transform: translateY(-0.15rem);
+}
+
+/* Site-standard pill treatment for sound controls. */
+.sound-control,
+.institutional-sound,
+.award-home .award-testimonials .cinema-volume-control,
+.award-home .award-testimonials .cinema-fullscreen-control {
+  min-height: 2.6rem;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgb(243 241 237 / 58%);
+  border-radius: 999px;
+  background: rgb(5 7 11 / 48%);
+  color: var(--award-paper, #f3f1ed);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease, transform 220ms ease, opacity 900ms ease 950ms;
+}
+
+.sound-control:hover,
+.sound-control:focus-visible,
+.institutional-sound:hover,
+.institutional-sound:focus-visible {
+  background: var(--award-paper, #f3f1ed);
+  color: var(--award-ink, #05070b);
+  transform: translateY(-0.15rem);
 }
 
 @media (max-width: 620px) {
   .award-home .award-testimonials .cinema-volume-control {
     right: 8.5rem;
+  }
+}
+
+/* Final benefits composition: grounded metrics on the brand's deep navy. */
+.award-home .award-benefits {
+  min-height: 100svh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  padding: clamp(4rem, 8vh, 7rem) clamp(1.25rem, 6vw, 7rem) clamp(3rem, 7vh, 5.5rem) !important;
+  background: #111827 !important;
+  background-image: none !important;
+}
+
+.award-home .award-benefits::after {
+  display: none !important;
+}
+
+.award-home .myway-impact-line {
+  width: min(100%, 96rem) !important;
+  max-width: 96rem !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.award-home .myway-impact-line article,
+.award-home .myway-impact-line article:nth-child(n) {
+  min-height: clamp(14rem, 24vh, 19rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 2rem !important;
+  padding: 1.25rem clamp(1rem, 2.2vw, 2.25rem) !important;
+  border: 0 !important;
+  border-left: 1px solid rgb(243 241 237 / 16%) !important;
+  background: transparent !important;
+}
+
+.award-home .myway-impact-line strong,
+.award-home .myway-impact-line article:nth-child(even) strong,
+.award-home .myway-impact-line .impact-word {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  color: rgb(243 241 237 / 18%) !important;
+  font-size: clamp(4.5rem, 8vw, 8rem) !important;
+  line-height: 0.8 !important;
+  letter-spacing: -0.08em !important;
+  text-align: left !important;
+  transform: none !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+.award-home .myway-impact-line article > span,
+.award-home .myway-impact-line article:nth-child(2) > span,
+.award-home .myway-impact-line article:nth-child(3) > span {
+  max-width: 12rem !important;
+  margin: 0 !important;
+  color: rgb(243 241 237 / 86%) !important;
+  font-size: clamp(0.78rem, 1vw, 1rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.03em !important;
+  text-align: left !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .award-benefits {
+    min-height: auto !important;
+    display: block !important;
+    padding-block: 4rem 3.5rem !important;
+  }
+
+  .award-home .myway-impact-line {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .award-home .myway-impact-line article,
+  .award-home .myway-impact-line article:nth-child(n) {
+    min-height: 10.5rem !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid rgb(243 241 237 / 14%) !important;
+  }
+
+  .award-home .myway-impact-line article:nth-child(odd) {
+    border-left: 0 !important;
+  }
+
+  .award-home .myway-impact-line strong,
+  .award-home .myway-impact-line article:nth-child(even) strong,
+  .award-home .myway-impact-line .impact-word {
+    font-size: clamp(3.5rem, 15vw, 5rem) !important;
+  }
+}
+
+/* Brand color placement: petrol belongs to the leadership training chapter. */
+.award-home .institutional-about-blue-card {
+  background: var(--award-blue) !important;
+}
+
+.award-home .training-experience {
+  background: #183a6a !important;
+}
+
+/* Section rhythm: light school statement, brand-blue benefits, petrol training. */
+.award-home .institutional-about-blue-card {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+
+.award-home .institutional-about-blue-card .eyebrow,
+.award-home .institutional-about-blue-card h3,
+.award-home .institutional-about-blue-card > p {
+  color: var(--ink) !important;
+}
+
+.award-home .award-benefits {
+  background: #183a6a !important;
+}
+
+.award-home .training-experience {
+  background: #111827 !important;
+}
+
+
+/* Join “Por que escolher” and benefits into one continuous blue chapter. */
+.award-home .award-benefits {
+  background: #183a6a !important;
+  color: var(--paper) !important;
+  border-top: 0 !important;
+}
+
+.award-home .award-benefits .myway-impact-line {
+  border-top-color: rgb(243 241 237 / 20%) !important;
+  border-bottom-color: rgb(243 241 237 / 20%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article,
+.award-home .award-benefits .myway-impact-line article:nth-child(n) {
+  border-left-color: rgb(243 241 237 / 18%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line strong,
+.award-home .award-benefits .myway-impact-line article:nth-child(even) strong,
+.award-home .award-benefits .myway-impact-line .impact-word {
+  color: rgb(243 241 237 / 24%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(2) > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(3) > span {
+  color: var(--paper) !important;
+}
+
+/* Final Performa composition based on the approved reference. */
+.award-home .training-experience .award-section-marker,
+.award-home .training-experience > .training-experience-intro,
+.award-home .training-experience > .training-experience-statement,
+.award-home .training-experience .training-experience-long-description,
+.award-home .training-experience .training-experience-description { display: none !important; }
+.award-home .training-experience-copy { display: grid !important; grid-template-columns: minmax(22rem, .9fr) minmax(0, 1.1fr) !important; gap: clamp(4rem, 9vw, 10rem) !important; max-width: 96rem !important; margin: 0 auto !important; padding: 0 !important; border: 0 !important; }
+.award-home .training-experience-copy > div:first-child { display: block !important; max-width: 34rem !important; margin: 0 !important; text-align: left !important; }
+.award-home .training-experience-copy h3 { max-width: 8ch !important; margin: 2.75rem 0 0 !important; font-size: clamp(3.8rem, 5.7vw, 7rem) !important; line-height: .9 !important; letter-spacing: -.06em !important; text-align: left !important; }
+.award-home .training-experience-body { max-width: 52rem !important; margin: 0 !important; }
+.award-home .training-modules-intro { max-width: 48rem !important; margin: 0 0 3.5rem !important; color: var(--paper) !important; font-size: clamp(1.15rem, 1.55vw, 1.55rem) !important; line-height: 1.35 !important; text-align: left !important; }
+.award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; background: transparent !important; }
+.award-home .training-modules::before, .award-home .training-modules article::after { display: none !important; }
+.award-home .training-modules article, .award-home .training-modules article:nth-child(odd), .award-home .training-modules article:nth-child(even) { min-height: 9.2rem !important; display: grid !important; grid-template-columns: 2.2rem 1fr !important; align-content: start !important; gap: .8rem !important; margin: 0 !important; padding: 1.75rem 1.5rem 1.75rem 0 !important; border: 0 !important; border-bottom: 1px solid rgb(243 241 237 / 18%) !important; border-radius: 0 !important; background: transparent !important; }
+.award-home .training-modules article:nth-child(even) { padding-left: 1.25rem !important; border-left: 1px solid rgb(243 241 237 / 18%) !important; }
+.award-home .training-modules article > span { display: block !important; padding: 0 !important; border: 0 !important; color: rgb(243 241 237 / 62%) !important; font-size: .75rem !important; }
+.award-home .training-modules article strong { margin: 0 !important; color: var(--paper) !important; font-size: clamp(1.25rem, 1.65vw, 1.65rem) !important; font-weight: 500 !important; line-height: 1.05 !important; }
+.award-home .training-modules article p { grid-column: auto !important; margin: 1rem 0 0 !important; color: var(--paper) !important; font-size: .88rem !important; line-height: 1.4 !important; }
+.award-home .training-experience-meta { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 1.5rem !important; margin-top: 4rem !important; padding-top: 2rem !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; }
+@media (max-width: 900px) { .award-home .training-experience-copy { grid-template-columns: 1fr !important; gap: 4rem !important; } .award-home .training-experience-copy h3 { max-width: 10ch !important; } }
+@media (max-width: 560px) { .award-home .training-modules { grid-template-columns: 1fr !important; } .award-home .training-modules article:nth-child(even) { padding-left: 0 !important; border-left: 0 !important; } .award-home .training-experience-meta { grid-template-columns: 1fr !important; } }
+
+/* Restore the original Performa section visibility. */
+.award-home .training-experience .award-section-marker,
+.award-home .training-experience > .training-experience-intro,
+.award-home .training-experience > .training-experience-statement,
+.award-home .training-experience .training-experience-long-description,
+.award-home .training-experience .training-experience-description { display: block !important; }
+.award-home .training-experience-copy { display: grid !important; grid-template-columns: minmax(15rem, .8fr) minmax(0, 1.2fr) !important; gap: clamp(3rem, 9vw, 10rem) !important; max-width: 78rem !important; margin: 0 auto clamp(6rem, 12vw, 11rem) !important; padding-top: clamp(2rem, 4vw, 4rem) !important; border-top: 1px solid var(--award-line-light) !important; }
+.award-home .training-experience-copy > div:first-child { display: block !important; max-width: none !important; margin: 0 !important; text-align: left !important; }
+.award-home .training-experience-copy h3 { max-width: 8ch !important; margin: 2rem 0 0 !important; font-size: clamp(2.8rem, 5vw, 5.8rem) !important; line-height: .92 !important; text-align: left !important; }
+.award-home .training-experience-body { max-width: 42rem !important; margin: 0 !important; }
+.award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; margin-top: 2.75rem !important; }
+@media (max-width: 700px) { .award-home .training-experience-copy { grid-template-columns: 1fr !important; } .award-home .training-modules { grid-template-columns: 1fr !important; } }
+@media (max-width: 480px) { .award-home .training-modules { grid-template-columns: 1fr !important; } }
+
+/* Performa manifesto: keep the complete introduction readable after the
+   legacy composition overrides above. */
+.award-home .training-experience-long-description {
+  display: grid !important;
+  width: min(100%, 58rem) !important;
+  max-width: 58rem !important;
+  margin: clamp(3rem, 6vw, 6rem) 0 0 auto !important;
+  gap: 1rem !important;
+  color: rgb(243 241 237 / 78%) !important;
+  font-family: var(--font-aktiv), sans-serif !important;
+  font-size: clamp(1rem, 1.25vw, 1.18rem) !important;
+  line-height: 1.55 !important;
+}
+
+.award-home .training-experience-long-description p,
+.award-home .training-experience-long-description p:first-child {
+  max-width: 52rem !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.award-home .training-experience-long-description .training-experience-lead {
+  max-width: 44rem !important;
+  margin-bottom: 0.75rem !important;
+  color: var(--award-paper) !important;
+  font-family: var(--font-binoma), sans-serif !important;
+  font-size: clamp(1.8rem, 3vw, 3rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.award-home .training-experience-long-description .training-experience-closing-copy {
+  max-width: 42rem !important;
+  margin-top: 0.75rem !important;
+  color: var(--award-paper) !important;
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem) !important;
+  line-height: 1.35 !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .training-experience-long-description {
+    width: 100% !important;
+    margin-top: 2.5rem !important;
+    font-size: 0.98rem !important;
+  }
+
+  .award-home .training-experience-long-description .training-experience-lead {
+    font-size: clamp(1.7rem, 8vw, 2.4rem) !important;
+  }
+}
+
+/* Keep the Performa heading and introductory copy fully inside the viewport. */
+.award-home .training-experience {
+  padding-top: clamp(8rem, 11vw, 10rem) !important;
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 10.5rem !important;
+  grid-template-columns: 2rem 1fr !important;
+  column-gap: .8rem !important;
+  padding: 1.35rem 1.25rem 1.45rem 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgb(243 241 237 / 16%) !important;
+  background: transparent !important;
+}
+.award-home .training-modules article:nth-child(even) { padding-left: 1rem !important; border-left: 0 !important; }
+.award-home .training-modules article > span { display: block !important; width: auto !important; height: auto !important; border: 0 !important; padding: 0 !important; }
+.award-home .training-modules article strong { grid-column: 2 !important; margin: 0 !important; font-size: clamp(1rem, 1.35vw, 1.25rem) !important; line-height: 1.05 !important; }
+.award-home .training-modules article p { grid-column: 2 !important; margin: .45rem 0 0 !important; font-size: .78rem !important; line-height: 1.4 !important; }
+
+/* Final Performa layout: the reference composition is a 2x2 module grid. */
+.award-home .training-experience-copy { display: block !important; max-width: 78rem !important; }
+.award-home .training-experience-copy > div:first-child { display: none !important; }
+.award-home .training-experience-body { max-width: 42rem !important; margin: 0 !important; }
+.award-home .training-modules-intro { max-width: 40rem !important; margin: 0 0 2.5rem !important; text-align: left !important; }
+.award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; background: transparent !important; }
+.award-home .training-modules::before,
+.award-home .training-modules article::after { display: none !important; }
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 7.3rem !important;
+  display: grid !important;
+  grid-template-columns: 2rem 1fr !important;
+  align-content: start !important;
+  gap: 0.8rem !important;
+  margin: 0 !important;
+  padding: 1.5rem 1.25rem 1.5rem 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgb(243 241 237 / 18%) !important;
+  background: transparent !important;
+}
+.award-home .training-modules article:nth-child(even) { padding-left: 1rem !important; border-left: 1px solid rgb(243 241 237 / 18%) !important; }
+.award-home .training-modules article > span { display: block !important; padding: 0 !important; border: 0 !important; color: rgb(243 241 237 / 62%) !important; font-size: 0.68rem !important; }
+.award-home .training-modules article strong { margin: 0 !important; color: var(--paper) !important; font-size: clamp(1.1rem, 1.5vw, 1.35rem) !important; line-height: 1.1 !important; }
+.award-home .training-modules article p { grid-column: auto !important; margin: 0.75rem 0 0 !important; color: rgb(243 241 237 / 74%) !important; font-size: 0.78rem !important; line-height: 1.45 !important; }
+.award-home .training-experience-meta { margin-top: 3.2rem !important; padding-top: 1.5rem !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; }
+@media (max-width: 560px) {
+  .award-home .training-modules { grid-template-columns: 1fr !important; }
+  .award-home .training-modules article:nth-child(even) { padding-left: 0 !important; border-left: 0 !important; }
+}
+
+/* Performa curriculum: title left, four compact topics right. */
+.award-home .training-experience-copy {
+  display: block;
+  max-width: 78rem;
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.award-home .training-experience-copy > div:first-child {
+  display: none;
+}
+
+.award-home .training-experience-copy h3 {
+  max-width: 8ch;
+  margin: 1.5rem 0 0;
+  font-size: clamp(2.5rem, 4.5vw, 4.8rem);
+  line-height: 0.94;
+  text-align: left;
+}
+
+.award-home .training-experience-body {
+  max-width: 42rem;
+  margin: 0;
+}
+
+.award-home .training-modules-intro {
+  max-width: 40rem;
+  margin: 0 0 2.5rem !important;
+  color: rgb(243 241 237 / 82%);
+  font-size: clamp(1rem, 1.2vw, 1.15rem) !important;
+  line-height: 1.45 !important;
+  text-align: left;
+}
+
+.award-home .training-modules {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(243 241 237 / 22%);
+  background: transparent;
+}
+
+.award-home .training-modules::before,
+.award-home .training-modules article::after {
+  display: none;
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 7.3rem;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-content: start;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1.5rem 1.25rem 1.5rem 0;
+  border: 0;
+  border-bottom: 1px solid rgb(243 241 237 / 18%);
+  border-radius: 0;
+  background: transparent;
+}
+
+.award-home .training-modules article:nth-child(even) {
+  padding-left: 1rem;
+  border-left: 1px solid rgb(243 241 237 / 18%);
+}
+
+.award-home .training-modules article > span {
+  display: block;
+  padding: 0;
+  color: rgb(243 241 237 / 62%);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.award-home .training-modules article strong {
+  margin: 0;
+  color: var(--paper);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.award-home .training-modules article p {
+  margin-top: 0.75rem;
+  color: rgb(243 241 237 / 74%);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.award-home .training-experience-meta {
+  margin-top: 3.2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(243 241 237 / 22%);
+}
+
+@media (max-width: 800px) {
+  .award-home .training-experience-copy { display: block; }
+}
+
+@media (max-width: 560px) {
+  .award-home .training-modules {
+    grid-template-columns: 1fr;
+  }
+
+  .award-home .training-modules article:nth-child(even) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+/* Curriculum: four columns on wide screens. Keep this override last so the
+   chapter layout cannot fall back to the previous two-column grid. */
+.award-home .training-modules {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  margin-inline: 0 !important;
+}
+
+.award-home .training-modules article:nth-child(4n) {
+  border-right: 0 !important;
+}
+
+.award-home .training-modules article:nth-child(4n + 1),
+.award-home .training-modules article:nth-child(4n + 2),
+.award-home .training-modules article:nth-child(4n + 3) {
+  border-right: 1px solid rgb(243 241 237 / 16%) !important;
+}
+
+@media (max-width: 1100px) {
+  .award-home .training-modules {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .award-home .training-modules article:nth-child(4n + 1),
+  .award-home .training-modules article:nth-child(4n + 2),
+  .award-home .training-modules article:nth-child(4n + 3) {
+    border-right: 0 !important;
+  }
+
+  .award-home .training-modules article:nth-child(3n + 1),
+  .award-home .training-modules article:nth-child(3n + 2) {
+    border-right: 1px solid rgb(243 241 237 / 16%) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .award-home .training-modules article:nth-child(3n + 1),
+  .award-home .training-modules article:nth-child(3n + 2) {
+    border-right: 0 !important;
+  }
+
+  .award-home .training-modules article:nth-child(2n + 1) {
+    border-right: 1px solid rgb(243 241 237 / 16%) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .award-home .training-modules {
+    grid-template-columns: 1fr !important;
+  }
+
+  .award-home .training-modules article:nth-child(n) {
+    border-right: 0 !important;
+  }
+}
+
+/* Client-approved direction: return to a quiet editorial grid for the modules. */
+.award-home .training-modules {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  padding: 0;
+  border-top: 1px solid rgb(243 241 237 / 22%);
+  border-bottom: 1px solid rgb(243 241 237 / 22%);
+  background: rgb(243 241 237 / 18%);
+}
+
+.award-home .training-modules::before,
+.award-home .training-modules article::after {
+  display: none;
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 14rem;
+  margin: 0;
+  padding: 1.5rem 1.25rem 1.75rem;
+  border: 0;
+  border-right: 1px solid rgb(243 241 237 / 18%);
+  border-radius: 0;
+  background: var(--navy);
+}
+
+.award-home .training-modules article:nth-child(4n) {
+  border-right: 0;
+}
+
+.award-home .training-modules article > span {
+  width: auto;
+  height: auto;
+  place-items: start;
+  border: 0;
+  border-radius: 0;
+  color: rgb(243 241 237 / 58%);
+}
+
+.award-home .training-modules article strong {
+  margin-top: 0.8rem;
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+}
+
+.award-home .training-modules article p {
+  margin-top: 0.65rem;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .award-home .training-modules { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .award-home .training-modules article:nth-child(4n) { border-right: 1px solid rgb(243 241 237 / 18%); }
+  .award-home .training-modules article:nth-child(3n) { border-right: 0; }
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .award-home .training-modules article:nth-child(3n) { border-right: 1px solid rgb(243 241 237 / 18%); }
+  .award-home .training-modules article:nth-child(2n) { border-right: 0; }
+}
+
+@media (max-width: 480px) {
+  .award-home .training-modules { grid-template-columns: 1fr; }
+  .award-home .training-modules article,
+  .award-home .training-modules article:nth-child(n) { border-right: 0; }
+}
+
+/* Restore the approved two-column editorial composition. */
+.award-home .training-experience-copy {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(3rem, 9vw, 10rem);
+  max-width: 78rem;
+  margin: 0 auto clamp(6rem, 12vw, 11rem);
+  padding-top: clamp(2rem, 4vw, 4rem);
+  border-top: 1px solid rgb(243 241 237 / 22%);
+}
+
+.award-home .training-experience-copy > div:first-child {
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+
+.award-home .training-experience-copy h3 {
+  max-width: 8ch;
+  margin: 2rem 0 0;
+  font-size: clamp(2.8rem, 5vw, 5.8rem);
+  line-height: 0.92;
+  text-align: left;
+}
+
+.award-home .training-experience-body {
+  max-width: 42rem;
+  margin: 0;
+}
+
+.award-home .training-modules-intro {
+  max-width: 38rem;
+  margin: 0 0 2rem !important;
+  text-align: left;
+}
+
+.award-home .training-modules {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  max-width: none;
+  margin-top: 2.75rem;
+  padding: 0;
+  border-top: 1px solid rgb(243 241 237 / 22%);
+  border-bottom: 0;
+  background: transparent;
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 10.5rem;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  column-gap: 0.8rem;
+  padding: 1.35rem 1.25rem 1.45rem 0;
+  border: 0;
+  border-bottom: 1px solid rgb(243 241 237 / 16%);
+  border-radius: 0;
+  background: transparent;
+}
+
+.award-home .training-modules article:nth-child(odd) {
+  border-right: 1px solid rgb(243 241 237 / 16%);
+}
+
+.award-home .training-modules article:nth-child(even) {
+  padding-left: 1rem;
+  border-right: 0;
+}
+
+.award-home .training-modules article:nth-child(4n) {
+  border-right: 0;
+}
+
+.award-home .training-modules article > span {
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  color: rgb(243 241 237 / 52%);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.award-home .training-modules article strong {
+  margin: 0;
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  font-weight: 500;
+}
+
+.award-home .training-modules article p {
+  grid-column: 2;
+  max-width: none;
+  margin: 0.45rem 0 0;
+  color: rgb(243 241 237 / 58%);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.award-home .training-experience-closing {
+  max-width: 58rem;
+  margin-top: clamp(5rem, 10vw, 10rem);
+}
+
+@media (max-width: 800px) {
+  .award-home .training-experience-copy { grid-template-columns: 1fr; gap: 3rem; }
+  .award-home .training-experience-copy h3 { max-width: 12ch; }
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules { grid-template-columns: 1fr; }
+  .award-home .training-modules article,
+  .award-home .training-modules article:nth-child(n) { border-right: 0; padding-left: 0; }
+}
+
+/* Four-column curriculum grid on wide screens. */
+.award-home .training-modules {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-height: 12rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  border-right: 1px solid rgb(243 241 237 / 16%);
+}
+
+.award-home .training-modules article:nth-child(4n) {
+  border-right: 0;
+}
+
+@media (max-width: 1100px) {
+  .award-home .training-modules { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .award-home .training-modules article:nth-child(4n) { border-right: 1px solid rgb(243 241 237 / 16%); }
+  .award-home .training-modules article:nth-child(3n) { border-right: 0; }
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .award-home .training-modules article:nth-child(3n) { border-right: 1px solid rgb(243 241 237 / 16%); }
+  .award-home .training-modules article:nth-child(2n) { border-right: 0; }
+}
+
+@media (max-width: 480px) {
+  .award-home .training-modules { grid-template-columns: 1fr; }
+  .award-home .training-modules article:nth-child(n) { border-right: 0; }
+}
+
+/* Performa journey: give the 14 encounters a clear editorial rhythm. */
+.award-home .training-experience-intro {
+  margin-bottom: clamp(5rem, 10vw, 10rem);
+}
+
+.award-home .training-experience-copy {
+  max-width: 96rem;
+  gap: clamp(3rem, 7vw, 8rem);
+}
+
+.award-home .training-modules {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+}
+
+.award-home .training-modules article {
+  min-height: clamp(7.5rem, 10vw, 9.5rem);
+  padding-block: 1.35rem 1.5rem;
+}
+
+.award-home .training-modules article > span {
+  font-family: var(--font-aktiv), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.award-home .training-modules article strong {
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem);
+  line-height: 1.08;
+}
+
+.award-home .training-modules article p {
+  max-width: 28rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.award-home .training-experience-closing {
+  max-width: 58rem;
+  margin: clamp(5rem, 10vw, 10rem) auto clamp(4rem, 8vw, 8rem);
+  padding-top: clamp(2rem, 4vw, 3.5rem);
+  border-top: 1px solid rgb(243 241 237 / 24%);
+  font-family: var(--font-binoma), sans-serif;
+  font-size: clamp(2.2rem, 4.5vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.award-home .training-experience-closing strong {
+  color: var(--paper);
+  font-weight: 400;
+}
+
+/* Signature layout: the curriculum becomes a visual path through the journey. */
+.award-home .training-experience-copy {
+  display: block;
+  max-width: 88rem;
+  margin-top: clamp(5rem, 10vw, 9rem);
+}
+
+.award-home .training-experience-copy > div:first-child {
+  max-width: 58rem;
+  margin: 0 auto clamp(4rem, 8vw, 7rem);
+  text-align: center;
+}
+
+.award-home .training-experience-copy > div:first-child .training-label {
+  display: inline-block;
+}
+
+.award-home .training-experience-copy h3 {
+  max-width: 14ch;
+  margin-inline: auto;
+  font-size: clamp(3.2rem, 6vw, 7rem);
+  line-height: 0.88;
+  text-align: center;
+}
+
+.award-home .training-experience-body {
+  max-width: 76rem;
+  margin-inline: auto;
+}
+
+.award-home .training-modules-intro {
+  max-width: 52rem;
+  margin-inline: auto !important;
+  text-align: center;
+}
+
+.award-home .training-modules {
+  position: relative;
+  max-width: 76rem;
+  column-gap: clamp(2rem, 7vw, 7rem);
+  margin-inline: auto;
+  padding-block: 1rem;
+  border-top: 0;
+}
+
+.award-home .training-modules::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgb(243 241 237 / 30%) 8%, rgb(243 241 237 / 30%) 92%, transparent);
+  transform: translateX(-50%);
+}
+
+.award-home .training-modules article {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  align-content: start;
+  min-height: 14rem;
+  padding: 2.35rem 2.15rem;
+  border: 1px solid rgb(243 241 237 / 16%);
+  background: rgb(243 241 237 / 0.025);
+}
+
+.award-home .training-modules article:nth-child(odd) {
+  margin-right: clamp(0rem, 2vw, 2rem);
+}
+
+.award-home .training-modules article:nth-child(even) {
+  margin-left: clamp(0rem, 2vw, 2rem);
+}
+
+.award-home .training-modules article:nth-child(odd)::after,
+.award-home .training-modules article:nth-child(even)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: clamp(1rem, 3vw, 3rem);
+  height: 1px;
+  background: rgb(243 241 237 / 30%);
+}
+
+.award-home .training-modules article:nth-child(odd)::after { right: calc(clamp(1rem, 3vw, 3rem) * -1); }
+.award-home .training-modules article:nth-child(even)::after { left: calc(clamp(1rem, 3vw, 3rem) * -1); }
+
+.award-home .training-modules article > span {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid rgb(243 241 237 / 55%);
+  border-radius: 50%;
+  color: var(--paper);
+  font-size: 0.62rem;
+}
+
+.award-home .training-modules article strong,
+.award-home .training-modules article p {
+  grid-column: 2;
+}
+
+.award-home .training-modules article strong {
+  margin-top: 0.1rem;
+  color: var(--paper);
+}
+
+.award-home .training-modules article p {
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules article { padding: 1.7rem 1.35rem; }
+  .award-home .training-modules::before { left: 0.9rem; }
+  .award-home .training-modules article:nth-child(odd),
+  .award-home .training-modules article:nth-child(even) {
+    margin-inline: 0;
+  }
+  .award-home .training-modules article:nth-child(odd)::after,
+  .award-home .training-modules article:nth-child(even)::after { display: none; }
+}
+
+/* Modern pointer: a minimal arrow with a soft elevation effect. */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  a,
+  button,
+  [role="button"] { cursor: none !important; }
+
+  .custom-cursor { display: block !important; }
+
+  .custom-cursor .cursor-ring {
+    width: 1.15rem;
+    height: 1.45rem;
+    margin: -0.08rem 0 0 -0.08rem;
+    border: 0;
+    border-radius: 0.08rem;
+    background: var(--paper);
+    box-shadow: 0.12rem 0.18rem 0.45rem rgb(0 0 0 / 28%);
+    clip-path: polygon(0 0, 100% 70%, 58% 68%, 43% 100%);
+    transition: width 180ms ease, height 180ms ease, background-color 180ms ease, filter 180ms ease;
+  }
+
+  .custom-cursor .cursor-dot { display: none; }
+
+  .custom-cursor.is-interactive .cursor-ring {
+    width: 1.35rem;
+    height: 1.7rem;
+    margin: -0.08rem 0 0 -0.08rem;
+    border: 0;
+    border-radius: 0.08rem;
+    background: #7ab7c5;
+    box-shadow: 0.16rem 0.22rem 0.55rem rgb(0 0 0 / 32%);
+    backdrop-filter: none;
+  }
+}
+
+/* Cursor direction: precise square marker instead of the circular lens. */
+@media (pointer: fine) {
+  .cursor-ring {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: -0.675rem 0 0 -0.675rem;
+    border-radius: 0.22rem;
+    border-color: rgb(243 241 237 / 66%);
+    box-shadow: none;
+  }
+
+  .cursor-dot {
+    width: 0.24rem;
+    height: 0.24rem;
+    margin: -0.12rem 0 0 -0.12rem;
+    background: #7ab7c5;
+    box-shadow: 0 0 0.8rem rgb(122 183 197 / 72%);
+  }
+
+  .custom-cursor.is-interactive .cursor-ring {
+    width: 2.85rem;
+    height: 2.85rem;
+    margin: -1.425rem 0 0 -1.425rem;
+    border-radius: 0.65rem;
+    border-color: #7ab7c5;
+    background: rgb(122 183 197 / 12%);
+  }
+}
+
+/* Units: quieter typography and clearer information hierarchy. */
+.award-home .award-units { padding-block: clamp(5rem, 8vw, 8rem) !important; }
+.award-home .award-units .award-heading h2 { max-width: 18ch; font-size: clamp(2.8rem, 4.5vw, 5rem) !important; line-height: 0.96 !important; }
+.award-home .award-unit-grid .award-unit-feature { grid-template-columns: minmax(20rem, 1.15fr) minmax(19rem, 0.85fr); box-shadow: 0 1.5rem 3rem rgb(5 18 43 / 10%); }
+.award-home .award-unit-copy { display: grid !important; grid-template-columns: 1fr !important; gap: 1.25rem; padding: clamp(2rem, 3vw, 3rem) !important; }
+.award-home .award-unit-copy > * { grid-column: 1 !important; }
+.award-home .award-unit-feature .unit-status { padding: 0.45rem 0.65rem; font-size: 0.58rem; }
+.award-home .award-unit-feature h3 { grid-column: 1 !important; max-width: 14ch; margin: 0.35rem 0 0; font-size: clamp(1.35rem, 2vw, 2.25rem) !important; font-weight: 700 !important; line-height: 1.08; letter-spacing: -0.025em; }
+.award-home .award-unit-feature p { max-width: 24rem; margin: 0; font-size: 0.95rem; line-height: 1.45; }
+.award-home .award-unit-feature div { display: flex; flex-wrap: wrap; gap: 0.7rem 1.25rem; margin-top: 0.35rem; }
+.award-home .award-unit-feature a { padding-bottom: 0.3rem; border-bottom: 1px solid rgb(243 241 237 / 40%); font-size: 0.67rem; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (max-width: 800px) { .award-home .award-unit-grid .award-unit-feature { grid-template-columns: 1fr; } .award-home .award-unit-feature h3 { font-size: clamp(1.45rem, 6vw, 2.35rem) !important; line-height: 1.08; } }
+
+/* Testimonial close: a quiet CTA after the proof section. */
+.award-home .award-testimonials .cinema-testimonials-cta { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; width: min(100%, 74rem); margin: clamp(5rem, 10vw, 9rem) auto 0; padding-top: 1.5rem; border-top: 1px solid rgb(243 241 237 / 22%); }
+.award-home .award-testimonials .cinema-testimonials-cta .eyebrow { margin: 0 0 1rem; color: rgb(243 241 237 / 58%); }
+.award-home .award-testimonials .cinema-testimonials-cta h3 { max-width: 17ch; margin: 0; color: var(--paper); font-family: var(--font-binoma), sans-serif; font-size: clamp(2rem, 3.8vw, 4.5rem); font-weight: 400; line-height: 0.94; letter-spacing: -0.05em; }
+.award-home .award-testimonials .cinema-testimonials-cta a { display: inline-flex; align-items: center; gap: 1rem; padding-bottom: 0.45rem; border-bottom: 1px solid rgb(243 241 237 / 55%); color: var(--paper); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+.award-home .award-testimonials .cinema-testimonials-cta a span { font-size: 1.25rem; font-weight: 400; }
+.award-home .award-testimonials .cinema-testimonials-cta a:hover { border-color: var(--paper); }
+@media (max-width: 700px) { .award-home .award-testimonials .cinema-testimonials-cta { display: grid; align-items: start; margin-top: 4.5rem; } .award-home .award-testimonials .cinema-testimonials-cta a { justify-self: start; } }
+
+/* Testimonial cards: reveal identity on hover and keep the media clean. */
+.award-home .award-testimonials .cinema-testimonial-overlay {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 3.2rem;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 3.5rem 1.2rem 0.7rem;
+  background: linear-gradient(180deg, transparent, rgb(5 7 11 / 88%));
+  color: var(--paper);
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 350ms ease, transform 350ms ease;
+  pointer-events: none;
+}
+
+.award-home .award-testimonials .cinema-video-shell:hover .cinema-testimonial-overlay,
+.award-home .award-testimonials .cinema-video-shell:focus-within .cinema-testimonial-overlay { opacity: 1; transform: translateY(0); }
+.award-home .award-testimonials .cinema-testimonial-overlay div { display: grid; gap: 0.25rem; }
+.award-home .award-testimonials .cinema-testimonial-overlay strong { font-size: 0.95rem; font-weight: 500; }
+.award-home .award-testimonials .cinema-testimonial-overlay span { color: rgb(243 241 237 / 68%); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.award-home .award-testimonials .cinema-testimonial-overlay small { color: rgb(243 241 237 / 68%); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.award-home .award-testimonials .cinema-volume-control { display: none !important; }
+
+@media (max-width: 800px) {
+  .award-home .award-testimonials .cinema-testimonial-overlay { position: relative; inset: auto; display: grid; padding: 1rem 0 0; background: transparent; opacity: 1; transform: none; }
+  .award-home .award-testimonials .cinema-testimonial-overlay small { display: none; }
+}
+
+/* Benefits / editorial art direction — consolidated final pass */
+.award-home .award-benefits {
+  position: relative;
+  isolation: isolate;
+  min-height: min(100svh, 60rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(6rem, 11vw, 10rem) clamp(1.25rem, 8vw, 9rem) clamp(3rem, 5vw, 5rem) !important;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 18%, rgb(56 116 164 / 28%), transparent 22rem),
+    radial-gradient(circle at 14% 92%, rgb(8 28 63 / 42%), transparent 26rem),
+    #183a6a !important;
+}
+
+.award-home .award-benefits::before {
+  content: "02";
+  position: absolute;
+  z-index: -1;
+  right: clamp(-3rem, 1vw, 2rem);
+  top: clamp(4rem, 8vw, 8rem);
+  color: transparent;
+  font-family: var(--font-aktiv), sans-serif;
+  font-size: clamp(18rem, 37vw, 39rem);
+  font-weight: 800;
+  letter-spacing: -0.12em;
+  line-height: 0.72;
+  -webkit-text-stroke: 1px rgb(243 241 237 / 9%);
+  opacity: 0.75;
+  pointer-events: none;
+  transform: rotate(-8deg);
+}
+
+.award-home .award-benefits::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3 !important;
+  background-image: linear-gradient(rgb(243 241 237 / 7%) 1px, transparent 1px), linear-gradient(90deg, rgb(243 241 237 / 7%) 1px, transparent 1px);
+  background-size: 25% 100%, 100% 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
+}
+
+.award-home .award-benefits .award-section-marker,
+.award-home .award-benefits .award-heading,
+.award-home .award-benefits .myway-impact-line,
+.award-home .award-benefits .benefits-scroll-note { position: relative; z-index: 1; }
+
+.award-home .award-benefits .award-section-marker {
+  position: absolute;
+  top: clamp(1.5rem, 3vw, 3rem);
+  left: clamp(1.25rem, 8vw, 9rem);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: rgb(243 241 237 / 70%);
+}
+
+.award-home .award-benefits .award-section-marker::before { content: ""; width: 2.5rem; height: 1px; background: currentColor; }
+.award-home .award-benefits .award-section-marker span { font-size: 0.75rem; letter-spacing: 0.08em; }
+.award-home .award-benefits .award-section-marker p { margin: 0; font-size: 0.67rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.award-home .award-benefits .award-heading { max-width: 59rem; margin: clamp(1rem, 5vw, 4rem) 0 0 clamp(0rem, 7vw, 7rem); }
+.award-home .award-benefits .award-heading > .eyebrow { margin-bottom: 1.5rem; color: rgb(243 241 237 / 60%); }
+.award-home .award-benefits .award-heading h2 { max-width: 15ch !important; margin: 0; font-size: clamp(3.5rem, 7.4vw, 8rem) !important; font-weight: 400; line-height: 0.88 !important; letter-spacing: -0.075em !important; }
+.award-home .award-benefits .benefits-lede { max-width: 31rem; margin: clamp(2rem, 4vw, 3.5rem) 0 0 35%; color: rgb(243 241 237 / 72%); font-size: clamp(0.95rem, 1.25vw, 1.2rem); line-height: 1.45; }
+
+.award-home .award-benefits .myway-impact-line {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  width: 100%;
+  max-width: 96rem;
+  margin: clamp(4rem, 9vw, 8rem) auto 0 !important;
+  border-top: 1px solid rgb(243 241 237 / 30%) !important;
+  border-bottom: 1px solid rgb(243 241 237 / 30%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article,
+.award-home .award-benefits .myway-impact-line article:nth-child(n) {
+  min-height: clamp(10rem, 16vw, 15rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: clamp(1rem, 1.8vw, 1.7rem) !important;
+  border-left: 1px solid rgb(243 241 237 / 22%) !important;
+  background: linear-gradient(145deg, rgb(243 241 237 / 5%), transparent 62%) !important;
+  transition: background 500ms ease, transform 500ms cubic-bezier(.2,.8,.2,1) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article:last-child { border-right: 1px solid rgb(243 241 237 / 22%) !important; }
+.award-home .award-benefits .myway-impact-line article:hover { background: linear-gradient(145deg, rgb(243 241 237 / 13%), transparent 72%) !important; transform: translateY(-0.4rem) !important; }
+.award-home .award-benefits .myway-impact-line strong { position: static !important; color: rgb(243 241 237 / 20%) !important; font-size: clamp(4rem, 7.2vw, 8rem) !important; line-height: 0.78 !important; letter-spacing: -0.07em !important; }
+.award-home .award-benefits .myway-impact-line article:nth-child(odd) strong { color: transparent !important; -webkit-text-stroke: 1px rgb(243 241 237 / 28%) !important; }
+.award-home .award-benefits .myway-impact-line article > span { position: static !important; max-width: 12rem !important; color: var(--paper) !important; font-size: clamp(0.67rem, 0.95vw, 0.9rem) !important; letter-spacing: 0.04em !important; line-height: 1.15 !important; }
+.award-home .award-benefits .benefits-scroll-note { align-self: flex-end; margin: 1.35rem 0 0; color: rgb(243 241 237 / 58%); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.award-home .award-benefits .benefits-scroll-note span { margin-right: 1rem; color: var(--paper); }
+
+@media (max-width: 800px) {
+  .award-home .award-benefits { min-height: auto; padding-top: 6rem !important; }
+  .award-home .award-benefits .award-heading { margin-left: 0; }
+  .award-home .award-benefits .award-heading h2 { font-size: clamp(3.2rem, 14vw, 5.6rem) !important; }
+  .award-home .award-benefits .benefits-lede { margin-left: 0; }
+  .award-home .award-benefits .myway-impact-line { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; margin-top: 4rem !important; }
+  .award-home .award-benefits .myway-impact-line article { min-height: 9rem !important; }
+  .award-home .award-benefits .myway-impact-line article:nth-child(2n) { border-right: 1px solid rgb(243 241 237 / 22%) !important; }
+}
+
+@media (max-width: 480px) {
+  .award-home .award-benefits .myway-impact-line { grid-template-columns: 1fr !important; }
+  .award-home .award-benefits .myway-impact-line article { min-height: 8rem !important; flex-direction: row !important; align-items: center !important; }
+  .award-home .award-benefits .myway-impact-line strong { font-size: 4.8rem !important; }
+  .award-home .award-benefits .myway-impact-line article > span { max-width: 9rem !important; }
+}
+
+/* Benefits alignment correction: one cohesive reading block */
+.award-home .award-benefits .award-heading {
+  width: min(100%, 67rem);
+  max-width: 67rem;
+  margin: clamp(1rem, 5vw, 4rem) auto 0 !important;
+  text-align: left;
+}
+
+.award-home .award-benefits .award-heading > .eyebrow {
+  width: fit-content;
+  margin: 0 0 1.35rem !important;
+  text-align: left;
+}
+
+.award-home .award-benefits .award-heading h2 {
+  max-width: 18ch !important;
+}
+
+.award-home .award-benefits .benefits-lede {
+  max-width: 32rem;
+  margin: clamp(1.5rem, 2.5vw, 2.3rem) 0 0 !important;
+  padding-left: clamp(0rem, 5vw, 4.5rem);
+  border-left: 1px solid rgb(243 241 237 / 35%);
+}
+
+.award-home .award-benefits::before {
+  font-size: clamp(14rem, 27vw, 28rem);
+  opacity: 0.42;
+}
+
+@media (max-width: 800px) {
+  .award-home .award-benefits .award-heading { width: 100%; }
+  .award-home .award-benefits .benefits-lede { padding-left: 1rem; }
+}
+
+/* Performa hierarchy: the manifesto is the hero, the course description supports it. */
+.award-home .training-experience-intro {
+  width: min(100%, 78rem);
+  margin-inline: auto;
+}
+
+.award-home .training-experience-intro h2 {
+  max-width: 19ch;
+  margin-top: 1.25rem;
+  font-size: clamp(2.6rem, 4.7vw, 5.4rem);
+  line-height: 0.94;
+  opacity: 0.78;
+}
+
+.award-home .training-experience-statement {
+  position: relative;
+  width: min(100%, 70rem);
+  max-width: 70rem;
+  margin: clamp(5rem, 10vw, 9rem) auto clamp(5rem, 9vw, 8rem) 0;
+  font-size: clamp(4rem, 8.3vw, 9.2rem);
+  line-height: 0.86;
+  letter-spacing: -0.075em;
+  text-wrap: balance;
+}
+
+.award-home .training-experience-statement::before {
+  content: "O ponto de partida";
+  display: block;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2.4rem);
+  color: rgb(243 241 237 / 58%);
+  font-family: var(--font-aktiv), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+}
+
+@media (max-width: 800px) {
+  .award-home .training-experience-intro h2 { font-size: clamp(2.5rem, 9vw, 4.3rem); }
+  .award-home .training-experience-statement { margin-top: 5rem; font-size: clamp(3.4rem, 14vw, 6.3rem); }
+}
+
+/* Final Performa correction: simple title, short explanation, quiet statement. */
+.award-home .training-experience-intro h2 {
+  max-width: none;
+  font-size: clamp(3rem, 5.4vw, 6.2rem);
+  line-height: 0.92;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 1;
+}
+
+.award-home .training-experience-description {
+  width: 100%;
+  max-width: none;
+  margin: 1.5rem 0 0;
+  color: rgb(243 241 237 / 70%);
+  font-family: var(--font-aktiv), sans-serif;
+  font-size: clamp(1.1rem, 1.8vw, 1.65rem);
+  line-height: 1.4;
+}
+
+.award-home .training-experience-description:not(.training-experience-long-description) {
+  display: none !important;
+}
+
+.award-home .training-experience-long-description {
+  display: grid !important;
+  gap: 1rem;
+  font-size: 1rem !important;
+}
+
+.award-home .training-experience-intro > .training-experience-description:not(.training-experience-long-description) {
+  display: none !important;
+}
+
+.award-home .training-experience-long-description p {
+  margin: 0;
+}
+
+.award-home .training-experience-long-description strong {
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.award-home .training-experience-long-description p:first-child {
+  max-width: 92rem;
+  font-size: clamp(1.1rem, 1.35vw, 1.35rem) !important;
+  line-height: 1.55 !important;
+}
+
+.award-home .training-experience-statement {
+  width: min(100%, 50rem);
+  max-width: 50rem;
+  margin: clamp(5rem, 9vw, 8rem) 0 clamp(5rem, 8vw, 7rem) auto;
+  font-size: clamp(2.5rem, 4.5vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.award-home .training-experience-statement::before {
+  margin-bottom: 1.2rem;
+  font-size: 0.68rem;
+}
+
+.award-home .training-experience-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid rgb(243 241 237 / 28%);
+}
+
+.award-home .training-experience-meta div {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.award-home .training-experience-meta strong {
+  color: var(--paper);
+  font-family: var(--font-aktiv), sans-serif;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.award-home .training-experience-meta span {
+  color: rgb(243 241 237 / 62%);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px) {
+  .award-home .training-experience-meta { gap: 0.6rem; }
+  .award-home .training-experience-meta span { font-size: 0.58rem; }
+}
+
+@media (max-width: 800px) {
+  .award-home .training-experience-intro h2 { font-size: clamp(3rem, 13vw, 5rem); }
+  .award-home .training-experience-statement { margin-left: 0; font-size: clamp(2.4rem, 10vw, 4rem); }
+}
+
+/* Performa curriculum: remove the competing manifesto and expose editable modules. */
+.award-home .training-experience-statement { display: none !important; }
+.award-home .training-experience-copy h3 { max-width: 12ch; font-size: clamp(2.8rem, 4.6vw, 5.3rem); line-height: 0.94; font-weight: 400; text-transform: none; }
+.award-home .training-modules-intro { max-width: 38rem; margin: 0 0 2rem !important; color: rgb(243 241 237 / 76%); font-size: clamp(1rem, 1.2vw, 1.15rem) !important; line-height: 1.5 !important; }
+.award-home .training-modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 2.75rem; border-top: 1px solid rgb(243 241 237 / 22%); }
+.award-home .training-modules article { display: grid; grid-template-columns: 2rem 1fr; column-gap: 0.8rem; padding: 1.35rem 1.25rem 1.45rem 0; border-bottom: 1px solid rgb(243 241 237 / 16%); }
+.award-home .training-modules article:nth-child(odd) { border-right: 1px solid rgb(243 241 237 / 16%); }
+.award-home .training-modules article:nth-child(even) { padding-left: 1rem; }
+.award-home .training-modules article > span { color: rgb(243 241 237 / 52%); font-size: 0.7rem; letter-spacing: 0.08em; }
+.award-home .training-modules strong { font-size: clamp(1rem, 1.35vw, 1.25rem); font-weight: 500; }
+.award-home .training-modules p { grid-column: 2; margin: 0.45rem 0 0; color: rgb(243 241 237 / 58%); font-size: 0.78rem; line-height: 1.4; }
+.award-home .training-experience-copy { margin-top: clamp(3rem, 6vw, 5.5rem); padding-top: clamp(3rem, 5vw, 4.75rem); border-top-color: rgb(243 241 237 / 22%) !important; }
+.award-home .training-experience-meta { margin-top: 3.25rem; padding-top: 1.6rem; border-top-color: rgb(243 241 237 / 22%) !important; }
+@media (max-width: 700px) { .award-home .training-modules { grid-template-columns: 1fr; } .award-home .training-modules article:nth-child(odd) { border-right: 0; } .award-home .training-modules article:nth-child(even) { padding-left: 0; } }
+
+/* Testimonials: premium horizontal rail with three full cards and a fourth preview. */
+.award-home .award-testimonials {
+  min-height: auto !important;
+  height: auto !important;
+  padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 5vw, 6rem) !important;
+  overflow: hidden !important;
+  background: #111827 !important;
+  color: var(--paper) !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.award-home .award-testimonials .cinema-horizontal-track {
+  --testimonial-gap: clamp(1rem, 2vw, 2rem);
+  display: flex !important;
+  gap: var(--testimonial-gap) !important;
+  width: calc(100% + clamp(1.25rem, 5vw, 6rem)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin-right: calc(clamp(1.25rem, 5vw, 6rem) * -1) !important;
+  padding: 0 clamp(1.25rem, 5vw, 6rem) 1rem 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  scrollbar-width: none !important;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - clamp(7rem, 16vw, 18rem)), transparent 100%) !important;
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - clamp(7rem, 16vw, 18rem)), transparent 100%) !important;
+}
+
+.award-home .award-testimonials .cinema-horizontal-track::-webkit-scrollbar {
+  display: none;
+}
+
+.award-home .award-testimonials .cinema-horizontal-track article {
+  position: relative !important;
+  flex: 0 0 calc((100% - (var(--testimonial-gap) * 3)) / 3.5) !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: block !important;
+  scroll-snap-align: start !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+.award-home .award-testimonials .cinema-video-shell {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1.18 / 1 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #0a101d !important;
+}
+
+.award-home .award-testimonials .cinema-video-shell::after {
+  background: linear-gradient(180deg, transparent 50%, rgb(5 7 11 / 72%)) !important;
+}
+
+.award-home .award-testimonials .cinema-video-shell video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.award-home .award-testimonials .cinema-controls {
+  position: static !important;
+  display: flex !important;
+  width: 100% !important;
+  margin-top: 2.25rem !important;
+  padding: 0 !important;
+}
+
+.award-home .award-testimonials .cinema-controls > button {
+  border-radius: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+@media (max-width: 800px) {
+  .award-home .award-testimonials .cinema-testimonials-heading {
+    display: block !important;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .award-home .award-testimonials .cinema-testimonials-heading h2 {
+    margin: 1.25rem 0 !important;
+  }
+
+  .award-home .award-testimonials .cinema-horizontal-track article {
+    flex-basis: 72vw !important;
+  }
+}
+
+/* Final gallery finish: larger media cards dissolve into the right horizon. */
+.award-home .award-testimonials {
+  position: relative !important;
+}
+
+.award-home .award-testimonials::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 4 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: clamp(7rem, 16vw, 18rem) !important;
+  display: block !important;
+  background: linear-gradient(90deg, transparent, #111827 92%) !important;
+  pointer-events: none !important;
+}
+
+.award-home .award-testimonials .cinema-horizontal-track article {
+  flex-basis: calc((100% - (var(--testimonial-gap) * 2)) / 3.2) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.award-home .award-testimonials .cinema-video-shell {
+  aspect-ratio: 0.72 / 1 !important;
+}
+
+.award-home .award-testimonials .cinema-video-shell video {
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.award-home .award-testimonials .cinema-fullscreen-control {
+  display: none !important;
+}
+
+.award-home .award-testimonials .cinema-volume-control {
+  right: 1.25rem !important;
+}
+
+@media (max-width: 800px) {
+  .award-home .award-testimonials::after {
+    width: 5rem !important;
+  }
+
+  .award-home .award-testimonials .cinema-horizontal-track {
+    width: calc(100% + 1.25rem) !important;
+    margin-right: -1.25rem !important;
+    padding-right: 1.25rem !important;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 5rem), transparent 100%) !important;
+    mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 5rem), transparent 100%) !important;
+  }
+
+  .award-home .award-testimonials .cinema-horizontal-track article {
+    flex-basis: 78vw !important;
+  }
+}
+
+/* Testimonials heading: compact editorial composition instead of three scattered columns. */
+.award-home .award-testimonials .cinema-testimonials-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr) !important;
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "title copy" !important;
+  column-gap: clamp(2rem, 7vw, 8rem) !important;
+  row-gap: 1.5rem !important;
+  align-items: end !important;
+  width: min(100%, 74rem) !important;
+  max-width: 74rem !important;
+  margin: 0 auto clamp(3rem, 6vw, 5rem) !important;
+}
+
+.award-home .award-testimonials .cinema-testimonials-heading .eyebrow { grid-area: eyebrow; }
+.award-home .award-testimonials .cinema-testimonials-heading h2 { grid-area: title; max-width: 14ch !important; font-size: clamp(3rem, 5.5vw, 6.2rem) !important; }
+.award-home .award-testimonials .cinema-testimonials-heading > p:last-child { grid-area: copy; max-width: 22rem !important; margin: 0 0 0.35rem !important; }
+
+@media (max-width: 800px) {
+  .award-home .award-testimonials .cinema-testimonials-heading {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 2.75rem !important;
+  }
+
+  .award-home .award-testimonials .cinema-testimonials-heading h2 { margin: 1.1rem 0 1.5rem !important; }
+}
+
+/* Benefits reference: deep navy from the supplied section image. */
+.award-home .award-benefits {
+  background: #111827 !important;
+}
+
+.award-home .myway-impact-line article > span,
+.award-home .myway-impact-line article:nth-child(2) > span,
+.award-home .myway-impact-line article:nth-child(3) > span {
+  color: var(--paper) !important;
+}
+
+/* Partners section: white field with navy typography. */
+.award-home .award-partners {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+
+.award-home .award-partners .award-section-marker,
+.award-home .award-partners .award-section-marker p,
+.award-home .award-partners .award-partner-intro .eyebrow,
+.award-home .award-partners .award-partner-intro h2,
+.award-home .award-partners .award-partner-intro > p,
+.award-home .award-partners .award-partner-strip span strong {
+  color: var(--ink) !important;
+}
+
+.award-home .award-partners .award-section-marker span,
+.award-home .award-partners .award-partner-strip .partner-icon {
+  border-color: rgb(17 24 39 / 24%) !important;
+}
+
+.award-home .award-partners .award-partner-carousel {
+  border-color: rgb(17 24 39 / 16%) !important;
+}
+
+/* Benefits section: white field with restrained brand-blue metrics. */
+.award-home .award-benefits {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+
+.award-home .myway-impact-line article,
+.award-home .myway-impact-line article:nth-child(n) {
+  border-left-color: rgb(24 58 106 / 18%) !important;
+}
+
+.award-home .myway-impact-line strong,
+.award-home .myway-impact-line article:nth-child(even) strong,
+.award-home .myway-impact-line .impact-word {
+  color: rgb(24 58 106 / 24%) !important;
+}
+
+.award-home .myway-impact-line article > span,
+.award-home .myway-impact-line article:nth-child(2) > span,
+.award-home .myway-impact-line article:nth-child(3) > span {
+  color: var(--ink) !important;
+}
+
+/* Keep the benefits visible when their section shares the blue chapter. */
+.award-home .award-benefits {
+  background: #183a6a !important;
+  color: var(--paper) !important;
+}
+
+.award-home .award-benefits .myway-impact-line {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  border-top-color: rgb(243 241 237 / 24%) !important;
+  border-bottom-color: rgb(243 241 237 / 24%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article,
+.award-home .award-benefits .myway-impact-line article:nth-child(n) {
+  visibility: visible !important;
+  opacity: 1 !important;
+  border-left-color: rgb(243 241 237 / 20%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line strong,
+.award-home .award-benefits .myway-impact-line article:nth-child(even) strong,
+.award-home .award-benefits .myway-impact-line .impact-word {
+  color: rgb(243 241 237 / 28%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(2) > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(3) > span {
+  color: var(--paper) !important;
+}
+
+/* Benefits refinement: compact, editorial and intentionally flat. */
+.award-home .award-benefits {
+  min-height: min(76svh, 52rem) !important;
+  justify-content: center !important;
+  padding-block: clamp(4rem, 8vh, 7rem) !important;
+  background: var(--paper) !important;
+}
+
+.award-home .myway-impact-line {
+  border-top: 1px solid rgb(24 58 106 / 18%) !important;
+  border-bottom: 1px solid rgb(24 58 106 / 18%) !important;
+  padding-block: 1px !important;
+}
+
+.award-home .myway-impact-line article,
+.award-home .myway-impact-line article:nth-child(n) {
+  min-height: clamp(12rem, 19vw, 15rem) !important;
+  padding: 1.5rem clamp(1rem, 2.2vw, 2rem) !important;
+}
+
+.award-home .myway-impact-line strong,
+.award-home .myway-impact-line article:nth-child(even) strong,
+.award-home .myway-impact-line .impact-word {
+  color: rgb(24 58 106 / 24%) !important;
+  font-size: clamp(4rem, 7vw, 7rem) !important;
+}
+
+.award-home .myway-impact-line article > span,
+.award-home .myway-impact-line article:nth-child(2) > span,
+.award-home .myway-impact-line article:nth-child(3) > span {
+  color: var(--ink) !important;
+  text-shadow: none !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .award-benefits {
+    min-height: auto !important;
+    padding-block: 4rem 3.5rem !important;
+  }
+
+  .award-home .myway-impact-line {
+    border-top: 1px solid rgb(24 58 106 / 18%) !important;
+    border-bottom: 0 !important;
+  }
+}
+
+/* Requested section only: “Por que escolher a nossa escola?” in blue. */
+.award-home .institutional-about-blue-card {
+  background: #183a6a !important;
+  color: var(--paper) !important;
+}
+
+.award-home .institutional-about-blue-card .eyebrow,
+.award-home .institutional-about-blue-card h3,
+.award-home .institutional-about-blue-card > p {
+  color: var(--paper) !important;
+}
+
+/* Blue chapter refinement: reduce the dead zone between message and metrics. */
+.award-home .institutional-about-blue-card {
+  min-height: clamp(30rem, 58svh, 46rem) !important;
+  padding-block: clamp(3.5rem, 7vw, 7rem) !important;
+}
+
+.award-home .award-benefits {
+  min-height: clamp(34rem, 64svh, 50rem) !important;
+  padding-block: clamp(3.5rem, 7vw, 6rem) !important;
+}
+
+.award-home .award-benefits .award-heading {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem) !important;
+}
+
+.award-home .award-benefits .myway-impact-line {
+  margin-top: auto !important;
+}
+
+/* About details: soften the oversized mark and separate the grid from the next color field. */
+.award-home .institutional-about-content::before {
+  display: none !important;
+}
+
+.award-home .institutional-about-details {
+  margin-bottom: clamp(3rem, 6vw, 6rem) !important;
+}
+
+@media (max-width: 900px) {
+  .award-home .institutional-about-content::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .award-home .institutional-about-content::before {
+    display: none !important;
+  }
+}
+
+/* Use the new logo pattern as the monumental watermark in the white about chapter. */
+.award-home .institutional-about-content::before {
+  display: block !important;
+  inset: -16% -12% -12% -12% !important;
+  background: url("/brand/logo%20grande.svg") center calc(34% + 105px) / min(calc(190vw + 800px), 237.5rem) auto no-repeat !important;
+  filter: none !important;
+  opacity: 0.08 !important;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.award-home .institutional-about-intro > h2:not(.institutional-about-title),
+.award-home .institutional-about-intro > div:not(.institutional-about-copy) {
+  display: none !important;
+}
+
+.award-home .institutional-about-copy {
+  display: grid !important;
+  gap: 1.35rem;
+  max-width: 34rem !important;
+  padding-top: 0 !important;
+}
+
+.award-home .institutional-about-copy p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem) !important;
+  line-height: 1.5 !important;
+}
+
+/* Remove the separate blue closing card from the about section. */
+.award-home .institutional-about-blue-card {
+  display: none !important;
+}
+
+/* Remove the benefits section from the institutional home. */
+.award-home .award-benefits {
+  display: none !important;
+}
+
+/* Align the institutional intro as three balanced columns. */
+.award-home .institutional-about-intro {
+  grid-template-columns: minmax(8rem, 0.28fr) minmax(0, 1.15fr) minmax(22rem, 0.9fr) !important;
+  align-items: start !important;
+}
+
+.award-home .institutional-about-title {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 13ch !important;
+  font-size: clamp(2.8rem, 4vw, 4.8rem) !important;
+  line-height: 0.92 !important;
+}
+
+.award-home .institutional-about-copy {
+  grid-column: 3;
+  grid-row: 1;
+  width: min(100%, 36rem) !important;
+  justify-self: start;
+}
+
+/* Hide the previous intro copy left in the legacy markup. */
+.award-home .institutional-about-intro > h2:nth-of-type(2),
+.award-home .institutional-about-intro > div:nth-of-type(2) {
+  display: none !important;
+}
+
+/* Keep the institutional video clean: no editorial text overlays. */
+.award-home .institutional-film-meta,
+.award-home .institutional-statements,
+.award-home .institutional-film-hint,
+.award-home .institutional-sound > span:not(.sound-bars) {
+  display: none !important;
+}
+
+/* Restore the original sound pill and keep the browser's default cursor. */
+.award-home .institutional-sound {
+  width: auto;
+  height: auto;
+  min-height: 2.9rem;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.15rem !important;
+  border: 1px solid rgb(243 241 237 / 72%) !important;
+  border-radius: 999px !important;
+  background: rgb(5 7 11 / 48%) !important;
+  color: var(--award-paper) !important;
+  box-shadow: none;
+  cursor: default !important;
+}
+
+.award-home .institutional-sound .sound-bars {
+  display: none !important;
+}
+
+.award-home .institutional-sound > span:not(.sound-bars) {
+  display: inline !important;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.award-home .institutional-sound::after {
+  content: "";
+  display: none;
+}
+
+.award-home .institutional-sound::before {
+  content: "···";
+  display: block;
+  margin-top: -0.15rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.award-home .institutional-sound:hover,
+.award-home .institutional-sound:focus-visible {
+  background: rgb(5 7 11 / 68%) !important;
+  color: var(--award-paper) !important;
+  transform: none;
+  cursor: default !important;
+}
+
+.award-home .institutional-sound,
+.award-home .institutional-sound * {
+  cursor: default !important;
+}
+
+/* Use the native system cursor across the site. */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  a,
+  button,
+  [role="button"] {
+    cursor: auto !important;
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: pointer !important;
+  }
+
+  .award-home .institutional-sound,
+  .award-home .institutional-sound * {
+    cursor: default !important;
+  }
+}
+
+.award-home .institutional-film-meta {
+  display: flex !important;
+}
+
+.award-home .institutional-film-hint {
+  display: grid !important;
+}
+
+.award-home .institutional-film-hint i {
+  font-size: 0 !important;
+}
+
+.award-home .institutional-film-hint i::after {
+  content: "↓";
+  display: block;
+  font-size: 1.1rem;
+}
+
+/* Let the page scroll normally through the institutional video. */
+.award-home .institutional-film {
+  height: 100svh !important;
+}
+
+.award-home .institutional-film-stage {
+  position: relative !important;
+  top: auto !important;
+  height: 100svh !important;
+}
+
+/* About chapter rhythm: reduce the dead space before the detail cards. */
+.award-home .institutional-about-intro {
+  margin-bottom: clamp(3.5rem, 6vw, 6rem) !important;
+}
+
+@media (max-width: 900px) {
+  .award-home .institutional-about-content::before {
+    inset: -8% -34% -6% -34% !important;
+    background-position: center calc(32% + 105px) !important;
+    background-size: min(calc(316vw + 200px), 128.5rem) auto !important;
+    opacity: 0.06 !important;
+  }
+}
+
+/* Benefits heading: restore the section's editorial introduction. */
+.award-home .award-benefits {
+  justify-content: flex-start !important;
+}
+
+.award-home .award-benefits .award-heading {
+  display: block !important;
+  width: min(100%, 96rem) !important;
+  max-width: 96rem !important;
+  margin: 0 auto !important;
+  text-align: left !important;
+}
+
+.award-home .award-benefits .award-heading > .eyebrow {
+  display: block !important;
+  margin: 0 0 1.25rem !important;
+  color: rgb(243 241 237 / 68%) !important;
+}
+
+.award-home .award-benefits .award-heading h2 {
+  display: block !important;
+  max-width: 14ch !important;
+  margin: 0 !important;
+  color: var(--paper) !important;
+  font-family: var(--font-binoma), sans-serif !important;
+  font-size: clamp(3rem, 5.5vw, 6.5rem) !important;
+  font-weight: 400 !important;
+  line-height: 0.92 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.award-home .award-benefits .myway-impact-line {
+  margin-top: auto !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .award-benefits .award-heading h2 {
+    max-width: 11ch !important;
+    font-size: clamp(2.8rem, 12vw, 4.8rem) !important;
+  }
+}
+
+/* Benefits heading: small, direct and subordinate to the metrics. */
+.award-home .award-benefits .award-heading {
+  max-width: 96rem !important;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem) !important;
+}
+
+.award-home .award-benefits .award-heading > .eyebrow {
+  margin-bottom: 0.75rem !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.16em !important;
+}
+
+.award-home .award-benefits .award-heading h2 {
+  max-width: 24ch !important;
+  font-size: clamp(2.1rem, 3.2vw, 4rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.04em !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .award-benefits .award-heading {
+    margin-bottom: 2.5rem !important;
+  }
+
+  .award-home .award-benefits .award-heading h2 {
+    max-width: 18ch !important;
+    font-size: clamp(2rem, 9vw, 3rem) !important;
+  }
+}
+
+/* Final color lock: benefits remain visible within the shared blue chapter. */
+.award-home .award-benefits {
+  background: #183a6a !important;
+  color: var(--paper) !important;
+}
+
+.award-home .award-benefits .myway-impact-line,
+.award-home .award-benefits .myway-impact-line article {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.award-home .award-benefits .myway-impact-line {
+  border-top-color: rgb(243 241 237 / 24%) !important;
+  border-bottom-color: rgb(243 241 237 / 24%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article,
+.award-home .award-benefits .myway-impact-line article:nth-child(n) {
+  border-left-color: rgb(243 241 237 / 20%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line strong,
+.award-home .award-benefits .myway-impact-line article:nth-child(even) strong,
+.award-home .award-benefits .myway-impact-line .impact-word {
+  color: rgb(243 241 237 / 28%) !important;
+}
+
+.award-home .award-benefits .myway-impact-line article > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(2) > span,
+.award-home .award-benefits .myway-impact-line article:nth-child(3) > span {
+  color: var(--paper) !important;
+}
+
+/* Final Performa layout: the reference composition is a 2x2 module grid. */
+.award-home .training-experience-copy { display: block !important; max-width: 78rem !important; }
+.award-home .training-experience-copy > div:first-child { display: none !important; }
+.award-home .training-experience-body { max-width: 42rem !important; margin: 0 !important; }
+.award-home .training-modules-intro { max-width: 40rem !important; margin: 0 0 2.5rem !important; text-align: left !important; }
+.award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; background: transparent !important; }
+.award-home .training-modules::before,
+.award-home .training-modules article::after { display: none !important; }
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) { min-height: 7.3rem !important; display: grid !important; grid-template-columns: 2rem 1fr !important; align-content: start !important; gap: 0.8rem !important; margin: 0 !important; padding: 1.5rem 1.25rem 1.5rem 0 !important; border: 0 !important; border-bottom: 1px solid rgb(243 241 237 / 18%) !important; background: transparent !important; }
+.award-home .training-modules article:nth-child(even) { padding-left: 1rem !important; border-left: 1px solid rgb(243 241 237 / 18%) !important; }
+.award-home .training-modules article > span { display: block !important; padding: 0 !important; border: 0 !important; color: rgb(243 241 237 / 62%) !important; font-size: 0.68rem !important; }
+.award-home .training-modules article strong { margin: 0 !important; color: var(--paper) !important; font-size: clamp(1.1rem, 1.5vw, 1.35rem) !important; line-height: 1.1 !important; }
+.award-home .training-modules article p { grid-column: auto !important; margin: 0.75rem 0 0 !important; color: rgb(243 241 237 / 74%) !important; font-size: 0.78rem !important; line-height: 1.45 !important; }
+.award-home .training-experience-meta { margin-top: 3.2rem !important; padding-top: 1.5rem !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; }
+@media (max-width: 560px) { .award-home .training-modules { grid-template-columns: 1fr !important; } .award-home .training-modules article:nth-child(even) { padding-left: 0 !important; border-left: 0 !important; } }
+
+/* Final title lock for the Performa composition. */
+.award-home .training-experience .award-section-marker,
+.award-home .training-experience > .training-experience-intro,
+.award-home .training-experience > .training-experience-statement,
+.award-home .training-experience .training-experience-long-description,
+.award-home .training-experience .training-experience-description { display: none !important; }
+.award-home .training-experience-copy { display: grid !important; grid-template-columns: minmax(22rem, .9fr) minmax(0, 1.1fr) !important; gap: clamp(4rem, 9vw, 10rem) !important; max-width: 96rem !important; margin: 0 auto !important; padding: 0 !important; border: 0 !important; }
+.award-home .training-experience-copy > div:first-child { display: block !important; max-width: 34rem !important; margin: 0 !important; text-align: left !important; }
+.award-home .training-experience-copy h3 { max-width: 8ch !important; margin: 2.75rem 0 0 !important; font-size: clamp(3.8rem, 5.7vw, 7rem) !important; line-height: .9 !important; letter-spacing: -.06em !important; text-align: left !important; }
+.award-home .training-experience-body { max-width: 52rem !important; margin: 0 !important; }
+.award-home .training-modules-intro { max-width: 48rem !important; margin: 0 0 3.5rem !important; font-size: clamp(1.15rem, 1.55vw, 1.55rem) !important; line-height: 1.35 !important; text-align: left !important; }
+.award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border-top: 1px solid rgb(243 241 237 / 22%) !important; background: transparent !important; }
+.award-home .training-modules::before, .award-home .training-modules article::after { display: none !important; }
+.award-home .training-modules article, .award-home .training-modules article:nth-child(odd), .award-home .training-modules article:nth-child(even) { min-height: 9.2rem !important; display: grid !important; grid-template-columns: 2.2rem 1fr !important; gap: .8rem !important; margin: 0 !important; padding: 1.75rem 1.5rem 1.75rem 0 !important; border: 0 !important; border-bottom: 1px solid rgb(243 241 237 / 18%) !important; background: transparent !important; }
+.award-home .training-modules article:nth-child(even) { padding-left: 1.25rem !important; border-left: 1px solid rgb(243 241 237 / 18%) !important; }
+.award-home .training-modules article > span { display: block !important; padding: 0 !important; border: 0 !important; font-size: .75rem !important; }
+.award-home .training-modules article strong { margin: 0 !important; font-size: clamp(1.25rem, 1.65vw, 1.65rem) !important; line-height: 1.05 !important; }
+.award-home .training-modules article p { grid-column: auto !important; margin: 1rem 0 0 !important; font-size: .88rem !important; line-height: 1.4 !important; }
+.award-home .training-experience-meta { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 1.5rem !important; margin-top: 4rem !important; padding-top: 2rem !important; }
+@media (max-width: 900px) { .award-home .training-experience-copy { grid-template-columns: 1fr !important; gap: 4rem !important; } }
+@media (max-width: 560px) { .award-home .training-modules { grid-template-columns: 1fr !important; } .award-home .training-modules article:nth-child(even) { padding-left: 0 !important; border-left: 0 !important; } .award-home .training-experience-meta { grid-template-columns: 1fr !important; } }
+
+/* Restore visibility after reverting the latest Performa pass. */
+.award-home .training-experience .award-section-marker,
+.award-home .training-experience > .training-experience-intro,
+.award-home .training-experience > .training-experience-statement,
+.award-home .training-experience .training-experience-long-description,
+.award-home .training-experience .training-experience-description { display: block !important; }
+.award-home .training-experience-copy { display: grid !important; grid-template-columns: minmax(15rem, .8fr) minmax(0, 1.2fr) !important; gap: clamp(3rem, 9vw, 10rem) !important; max-width: 78rem !important; margin: 0 auto clamp(6rem, 12vw, 11rem) !important; padding-top: clamp(2rem, 4vw, 4rem) !important; border-top: 1px solid var(--award-line-light) !important; }
+.award-home .training-experience-copy > div:first-child { display: block !important; max-width: none !important; margin: 0 !important; text-align: left !important; }
+.award-home .training-experience-copy h3 { max-width: 8ch !important; margin: 2rem 0 0 !important; font-size: clamp(2.8rem, 5vw, 5.8rem) !important; line-height: .92 !important; text-align: left !important; }
+.award-home .training-experience-body { max-width: 42rem !important; margin: 0 !important; }
+.award-home .training-modules { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; margin-top: 2.75rem !important; }
+@media (max-width: 1100px) { .award-home .training-modules { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+@media (max-width: 700px) { .award-home .training-experience-copy { grid-template-columns: 1fr !important; } .award-home .training-modules { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+@media (max-width: 480px) { .award-home .training-modules { grid-template-columns: 1fr !important; } }
+
+/* Final manifesto fit: the complete Performa copy stays visible and balanced. */
+.award-home .training-experience-long-description {
+  display: grid !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: clamp(1.5rem, 2vw, 2.5rem) 0 0 !important;
+  gap: clamp(1.25rem, 1.8vw, 1.8rem) !important;
+  color: rgb(243 241 237 / 78%) !important;
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem) !important;
+  line-height: 1.48 !important;
+  text-align: justify !important;
+  text-justify: inter-word;
+}
+
+.award-home .training-experience-long-description p {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  text-align: justify !important;
+  text-wrap: pretty;
+}
+
+/* The legacy first-paragraph treatment must not change the rhythm of the
+   three-paragraph manifesto. */
+.award-home .training-experience-long-description p:first-child {
+  max-width: none !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.award-home .training-experience-long-description strong {
+  color: var(--award-paper) !important;
+  font-weight: 700 !important;
+}
+
+.award-home .training-experience-long-description .training-experience-closing-copy {
+  max-width: 64rem !important;
+  margin-top: clamp(1rem, 2vw, 2rem) !important;
+  color: var(--award-paper) !important;
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem) !important;
+  line-height: 1.35 !important;
+}
+
+@media (max-width: 620px) {
+  .award-home .training-experience-long-description {
+    width: 100% !important;
+    margin-top: 1.25rem !important;
+    font-size: 0.95rem !important;
+    text-align: left !important;
+  }
+
+  .award-home .training-experience-long-description p {
+    text-align: left !important;
+  }
+
+}
+
+/* Module grid refinement: restrained editorial rhythm with no title collisions. */
+.award-home .training-experience-body {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.award-home .training-modules {
+  width: 100% !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  overflow: hidden;
+}
+
+.award-home .training-modules article,
+.award-home .training-modules article:nth-child(odd),
+.award-home .training-modules article:nth-child(even) {
+  min-width: 0 !important;
+  min-height: 8rem !important;
+  grid-template-columns: 1.45rem minmax(0, 1fr) !important;
+  gap: 0.55rem !important;
+  padding: 1.2rem 0.85rem 1.2rem 0 !important;
+  border-left: 0 !important;
+  border-right: 1px solid rgb(243 241 237 / 16%) !important;
+  border-bottom: 1px solid rgb(243 241 237 / 16%) !important;
+}
+
+.award-home .training-modules article:nth-child(4n) {
+  border-right: 0 !important;
+}
+
+.award-home .training-modules article > span {
+  padding-top: 0.15rem !important;
+  font-size: 0.65rem !important;
+  line-height: 1 !important;
+}
+
+.award-home .training-modules article strong {
+  min-width: 0 !important;
+  color: var(--paper) !important;
+  font-size: clamp(0.86rem, 1.05vw, 1.05rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.015em !important;
+  overflow-wrap: break-word !important;
+}
+
+@media (max-width: 1100px) {
+  .award-home .training-modules {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .award-home .training-modules article:nth-child(4n) {
+    border-right: 1px solid rgb(243 241 237 / 16%) !important;
+  }
+
+  .award-home .training-modules article:nth-child(3n) {
+    border-right: 0 !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .award-home .training-modules {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .award-home .training-modules article:nth-child(3n) {
+    border-right: 1px solid rgb(243 241 237 / 16%) !important;
+  }
+
+  .award-home .training-modules article:nth-child(2n) {
+    border-right: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .award-home .training-modules {
+    grid-template-columns: 1fr !important;
+  }
+
+  .award-home .training-modules article:nth-child(n) {
+    border-right: 0 !important;
   }
 }
