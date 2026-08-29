@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
+import { AUDIO_FOCUS_EVENT, requestAudioFocus } from "@/lib/audio-focus";
 
 type HeroIntroProps = {
   variant?: "leadership" | "institutional";
@@ -13,6 +14,7 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [isIntroDone, setIsIntroDone] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const audioId = useId();
   const videoRef = useRef<HTMLVideoElement>(null);
   const isReady = isVideoReady && isIntroDone;
   const discoverHref = variant === "institutional" ? "#sobre" : "#descobrir";
@@ -30,6 +32,18 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleAudioFocus = (event: Event) => {
+      const source = (event as CustomEvent<string>).detail;
+      if (source === audioId || !videoRef.current) return;
+      videoRef.current.muted = true;
+      setIsMuted(true);
+    };
+
+    window.addEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+    return () => window.removeEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+  }, [audioId]);
+
   function handlePointerMove(event: React.PointerEvent<HTMLElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty("--pointer-x", `${event.clientX - bounds.left}px`);
@@ -44,6 +58,7 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
     setIsMuted(video.muted);
 
     if (!video.muted) {
+      requestAudioFocus(audioId);
       await video.play();
     }
   }
@@ -126,22 +141,20 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
         </span>
       </Link>
 
-      {variant !== "institutional" ? (
-        <button
-          className="sound-control"
-          type="button"
-          onClick={toggleSound}
-          aria-label={isMuted ? "Ativar som do vídeo" : "Desativar som do vídeo"}
-          aria-pressed={!isMuted}
-        >
-          <span className={`sound-bars ${isMuted ? "is-muted" : ""}`} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>{isMuted ? "Som off" : "Som on"}</span>
-        </button>
-      ) : null}
+      <button
+        className="sound-control"
+        type="button"
+        onClick={toggleSound}
+        aria-label={isMuted ? "Ativar som do vídeo" : "Desativar som do vídeo"}
+        aria-pressed={!isMuted}
+      >
+        <span className={`sound-bars ${isMuted ? "is-muted" : ""}`} aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span>{isMuted ? "Som off" : "Som on"}</span>
+      </button>
 
       <div className="hero-progress" aria-hidden="true">
         <span />

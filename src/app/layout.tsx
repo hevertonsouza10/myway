@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { CustomCursor } from "@/components/custom-cursor";
 import "./globals.css";
 
 const aktiv = localFont({
@@ -60,7 +59,6 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${aktiv.variable} ${binoma.variable}`}>
       <body>
         {children}
-        <CustomCursor />
       </body>
     </html>
   );

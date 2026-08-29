@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { AUDIO_FOCUS_EVENT, requestAudioFocus } from "@/lib/audio-focus";
 
 type AboutBlock = { title: string; text: string };
 
@@ -18,6 +19,7 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
   const videoRef = useRef<HTMLVideoElement>(null);
   const [statement, setStatement] = useState(-1);
   const [isMuted, setIsMuted] = useState(true);
+  const audioId = useId();
 
   useEffect(() => {
     const updateProgress = () => {
@@ -40,6 +42,18 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
     };
   }, []);
 
+  useEffect(() => {
+    const handleAudioFocus = (event: Event) => {
+      const source = (event as CustomEvent<string>).detail;
+      if (source === audioId || !videoRef.current) return;
+      videoRef.current.muted = true;
+      setIsMuted(true);
+    };
+
+    window.addEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+    return () => window.removeEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+  }, [audioId]);
+
   const toggleSound = async () => {
     const video = videoRef.current;
     if (!video) return;
@@ -47,7 +61,10 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
     const nextMuted = !video.muted;
     video.muted = nextMuted;
     setIsMuted(nextMuted);
-    if (!nextMuted) await video.play();
+    if (!nextMuted) {
+      requestAudioFocus(audioId);
+      await video.play();
+    }
   };
 
   return (
@@ -78,25 +95,36 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
             ))}
           </div>
           <button
-            className={`institutional-sound ${isMuted ? "is-muted" : ""}`}
+            className="institutional-sound"
             type="button"
             onClick={toggleSound}
             aria-label={isMuted ? "Ativar som do vídeo institucional" : "Desativar som do vídeo institucional"}
             aria-pressed={!isMuted}
           >
-            <span className="institutional-sound-icon" aria-hidden="true">{isMuted ? "×" : "•••"}</span>
-            <span>{isMuted ? "Ativar som" : "Som ativado"}</span>
+            <span className={`sound-bars ${isMuted ? "is-muted" : ""}`} aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span>{isMuted ? "Som off" : "Som on"}</span>
           </button>
           <div className="institutional-film-hint" aria-hidden="true">
             <span>Continue rolando</span>
-            <i>↓</i>
+            <i>+</i>
           </div>
         </div>
       </div>
 
       <div className="institutional-about-content">
         <div className="institutional-about-intro">
-          <p className="eyebrow">Muito mais do que um treinamento</p>
+          <p className="eyebrow">Nosso prop&oacute;sito</p>
+          <h2 className="institutional-about-title">Uma experi&ecirc;ncia de transforma&ccedil;&atilde;o real</h2>
+          <div className="institutional-about-copy">
+            <p>A MyWay &ndash; Lidere Suas Escolhas &eacute; uma escola de desenvolvimento de habilidades mentais para empres&aacute;rios, l&iacute;deres e profissionais que buscam evoluir com consci&ecirc;ncia, m&eacute;todo e prop&oacute;sito.</p>
+            <p>Por meio de experi&ecirc;ncias presenciais, integramos lideran&ccedil;a, comportamento e desenvolvimento humano para ampliar a capacidade de pensar, decidir e agir com mais clareza e consist&ecirc;ncia.</p>
+            <p>Desenvolvemos pessoas que est&atilde;o &agrave; frente de decis&otilde;es, equipes e neg&oacute;cios, fortalecendo compet&ecirc;ncias essenciais para liderar melhor, enfrentar desafios e construir resultados sustent&aacute;veis &mdash; na vida e no trabalho.</p>
+            <p>Porque grandes resultados come&ccedil;am pela forma como voc&ecirc; pensa, escolhe e lidera.</p>
+          </div>
           <h2>Uma escola de transformação real.</h2>
           <div>
             <p>A MyWay é uma escola de desenvolvimento para empresários, líderes e profissionais que desejam evoluir com profundidade, método e propósito.</p>
@@ -114,8 +142,8 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
         </div>
         <div className="institutional-about-blue-card">
           <div>
-            <p className="eyebrow">Uma escola para evoluir</p>
-            <h3>Por que escolher<br />a nossa escola?</h3>
+            <p className="eyebrow">Uma experiência para evoluir</p>
+            <h3>Por que escolher<br />a MyWay?</h3>
           </div>
           <p>Um ambiente onde empresários, líderes e profissionais evoluem juntos, compartilham experiências e constroem escolhas capazes de transformar negócios e vidas.</p>
         </div>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { PointerEvent } from "react";
+import { AUDIO_FOCUS_EVENT, requestAudioFocus } from "@/lib/audio-focus";
 
 export type Testimonial = {
   title?: string;
@@ -22,7 +23,8 @@ function clamp(value: number, min: number, max: number) {
 
 export function CinematicTestimonials({ testimonials }: CinematicTestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [mutedByIndex, setMutedByIndex] = useState(() => testimonials.map(() => true));
+  const audioGroupId = useId();
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const scrollFrame = useRef(0);
@@ -34,17 +36,35 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       if (index === activeIndex) {
-        video.muted = true;
+        video.muted = mutedByIndex[index];
         void video.play().catch(() => undefined);
       } else {
         video.pause();
       }
     });
-  }, [activeIndex, isMuted]);
+  }, [activeIndex, mutedByIndex]);
 
   useEffect(() => () => {
     if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
   }, []);
+
+  useEffect(() => {
+    const handleAudioFocus = (event: Event) => {
+      const source = (event as CustomEvent<string>).detail;
+      videoRefs.current.forEach((video, index) => {
+        if (video) video.muted = source === `${audioGroupId}-${index}` ? false : true;
+      });
+      if (!source.startsWith(audioGroupId)) {
+        setMutedByIndex((current) => current.map(() => true));
+      } else {
+        const sourceIndex = Number(source.slice(`${audioGroupId}-`.length));
+        setMutedByIndex((current) => current.map((muted, index) => index === sourceIndex ? false : true));
+      }
+    };
+
+    window.addEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+    return () => window.removeEventListener(AUDIO_FOCUS_EVENT, handleAudioFocus);
+  }, [audioGroupId]);
 
   function updateActiveIndex() {
     const track = trackRef.current;
@@ -62,17 +82,22 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     const track = trackRef.current;
     if (!track) return;
     const nextIndex = clamp(index, 0, lastIndex);
-    track.scrollTo({ left: nextIndex * track.clientWidth, behavior: "smooth" });
+    const firstCard = track.querySelector<HTMLElement>("[data-testimonial-card]");
+    const cardStep = firstCard
+      ? firstCard.offsetWidth + Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0")
+      : track.clientWidth;
+    track.scrollTo({ left: nextIndex * cardStep, behavior: "smooth" });
     setActiveIndex(nextIndex);
   }
 
   function toggleMute(index: number) {
     const video = videoRefs.current[index];
     if (!video) return;
-    const nextMuted = !video.muted;
+    const nextMuted = !mutedByIndex[index];
     video.muted = nextMuted;
     if (!nextMuted) video.volume = 1;
-    setIsMuted(nextMuted);
+    setMutedByIndex((current) => current.map((muted, currentIndex) => currentIndex === index ? nextMuted : true));
+    if (!nextMuted) requestAudioFocus(`${audioGroupId}-${index}`);
   }
 
   function openFullscreen(video: HTMLVideoElement) {
@@ -88,6 +113,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const track = trackRef.current;
     if (!track) return;
+    if ((event.target as HTMLElement).closest("video, button")) return;
     dragStartX.current = event.clientX;
     dragStartScroll.current = track.scrollLeft;
     track.setPointerCapture(event.pointerId);
@@ -111,6 +137,11 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
 
   return (
     <div className="cinema-testimonials" role="region" aria-label="Depoimentos de clientes MyWay" aria-roledescription="carrossel">
+      <div className="cinema-testimonials-heading">
+        <p className="eyebrow">Depoimentos</p>
+        <h2>Experiências que continuam depois do encontro.</h2>
+        <p>Quem participa da MyWay leva novas escolhas, conversas e formas de liderar para a vida real.</p>
+      </div>
       <div
         ref={trackRef}
         className="cinema-horizontal-track"
@@ -134,13 +165,28 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
             aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.name ?? testimonial.title ?? "Depoimento"}`}
           >
             <div className="cinema-video-shell">
-              <video ref={(video) => { videoRefs.current[index] = video; }} controls autoPlay={index === activeIndex} muted loop playsInline preload={index === activeIndex ? "auto" : "metadata"} src={testimonial.src} />
-              <button className="cinema-volume-control" type="button" onClick={() => toggleMute(index)} aria-label={isMuted ? "Ativar som do depoimento" : "Silenciar depoimento"}>{isMuted ? "Ativar som" : "Silenciar"}</button>
-              <button className="cinema-fullscreen-control" type="button" onClick={() => { const video = videoRefs.current[index]; if (video) openFullscreen(video); }} aria-label="Abrir depoimento em tela cheia">Tela cheia</button>
-            </div>
-            <div className="cinema-card-copy">
-              <strong>{testimonial.name ?? testimonial.title ?? "Depoimento"}</strong>
-              <span>{testimonial.company ?? testimonial.context ?? "Cliente MyWay"}</span>
+              <video
+                ref={(video) => { videoRefs.current[index] = video; }}
+                controls
+                autoPlay={index === activeIndex}
+                muted={mutedByIndex[index]}
+                loop
+                playsInline
+                preload={index === activeIndex ? "auto" : "metadata"}
+                src={testimonial.src}
+                onClick={(event) => {
+                  if (event.currentTarget === event.target) openFullscreen(event.currentTarget);
+                }}
+                aria-label={`Reproduzir ${testimonial.title ?? "depoimento"}. Clique no vídeo para abrir em tela cheia.`}
+              />
+              <div className="cinema-testimonial-overlay" aria-hidden="true">
+                <div>
+                  <strong>{testimonial.name ?? testimonial.title ?? `Depoimento ${String(index + 1).padStart(2, "0")}`}</strong>
+                  <span>{testimonial.company ?? testimonial.context ?? "Aluno MyWay"}</span>
+                </div>
+                <small>Clique para assistir</small>
+              </div>
+              <button className="cinema-volume-control" type="button" onClick={() => toggleMute(index)} aria-label={mutedByIndex[index] ? "Ativar som do depoimento" : "Silenciar depoimento"}>{mutedByIndex[index] ? "Ativar som" : "Silenciar"}</button>
             </div>
           </article>
         ))}
@@ -154,6 +200,13 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
           ))}
         </div>
         <button type="button" onClick={() => goTo(activeIndex + 1)} disabled={activeIndex === lastIndex} aria-label="Proximo depoimento"></button>
+      </div>
+      <div className="cinema-testimonials-cta">
+        <div>
+          <p className="eyebrow">A sua próxima virada</p>
+          <h3>Você também pode fazer parte dessa transformação.</h3>
+        </div>
+        <a href="https://wa.me/5551993490339" target="_blank" rel="noreferrer">Candidatar-se <span aria-hidden="true">✦</span></a>
       </div>
     </div>
   );
