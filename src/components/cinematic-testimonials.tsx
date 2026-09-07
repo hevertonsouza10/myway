@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import type { PointerEvent } from "react";
+import Image from "next/image";
 import { AUDIO_FOCUS_EVENT, requestAudioFocus } from "@/lib/audio-focus";
+import styles from "./cinematic-testimonials.module.css";
 
 export type Testimonial = {
   title?: string;
@@ -11,6 +12,7 @@ export type Testimonial = {
   name?: string;
   company?: string;
   src: string;
+  youtubeId?: string;
 };
 
 type CinematicTestimonialsProps = {
@@ -23,13 +25,15 @@ function clamp(value: number, min: number, max: number) {
 
 export function CinematicTestimonials({ testimonials }: CinematicTestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [playingYoutubeIndex, setPlayingYoutubeIndex] = useState<number | null>(null);
   const [mutedByIndex, setMutedByIndex] = useState(() => testimonials.map(() => true));
   const audioGroupId = useId();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const scrollFrame = useRef(0);
-  const dragStartX = useRef<number | null>(null);
-  const dragStartScroll = useRef(0);
+  const journeyFrame = useRef(0);
   const lastIndex = Math.max(testimonials.length - 1, 0);
 
   useEffect(() => {
@@ -46,6 +50,63 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
 
   useEffect(() => () => {
     if (scrollFrame.current) window.cancelAnimationFrame(scrollFrame.current);
+    if (journeyFrame.current) window.cancelAnimationFrame(journeyFrame.current);
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    const sticky = stickyRef.current;
+    if (!section || !track || !sticky) return;
+    let target = 0;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const measure = () => {
+      const horizontalRoom = Math.max(0, track.scrollWidth - track.clientWidth);
+      section.style.height = `${sticky.offsetHeight + horizontalRoom}px`;
+    };
+
+    const getTarget = () => {
+      const horizontalRoom = Math.max(0, track.scrollWidth - track.clientWidth);
+      const scrollRange = Math.max(section.offsetHeight - sticky.offsetHeight, 1);
+      const top = Number.parseFloat(getComputedStyle(sticky).top) || 0;
+      const progress = clamp((top - section.getBoundingClientRect().top) / scrollRange, 0, 1);
+      return horizontalRoom * progress;
+    };
+
+    const animate = () => {
+      const distance = target - track.scrollLeft;
+      if (Math.abs(distance) < .5 || reduceMotion.matches) {
+        track.scrollLeft = target;
+        journeyFrame.current = 0;
+        return;
+      }
+      track.scrollLeft += distance * .14;
+      journeyFrame.current = requestAnimationFrame(animate);
+    };
+
+    const update = () => {
+      target = getTarget();
+      if (!journeyFrame.current) journeyFrame.current = requestAnimationFrame(animate);
+    };
+
+    const handleResize = () => { measure(); update(); };
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(track);
+    observer.observe(sticky);
+    measure();
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(journeyFrame.current);
+      journeyFrame.current = 0;
+      section.style.height = "";
+    };
   }, []);
 
   useEffect(() => {
@@ -55,6 +116,7 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
         if (video) video.muted = source === `${audioGroupId}-${index}` ? false : true;
       });
       if (!source.startsWith(audioGroupId)) {
+        setPlayingYoutubeIndex(null);
         setMutedByIndex((current) => current.map(() => true));
       } else {
         const sourceIndex = Number(source.slice(`${audioGroupId}-`.length));
@@ -74,11 +136,14 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     scrollFrame.current = window.requestAnimationFrame(() => {
       const firstCard = track.querySelector<HTMLElement>("[data-testimonial-card]");
       if (!firstCard) return;
-      setActiveIndex(clamp(Math.round(track.scrollLeft / Math.max(firstCard.offsetWidth, 1)), 0, lastIndex));
+      const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+      const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+      setActiveIndex(atEnd ? lastIndex : clamp(Math.round(track.scrollLeft / Math.max(firstCard.offsetWidth + gap, 1)), 0, lastIndex));
     });
   }
 
   function goTo(index: number) {
+    const section = sectionRef.current;
     const track = trackRef.current;
     if (!track) return;
     const nextIndex = clamp(index, 0, lastIndex);
@@ -86,7 +151,16 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     const cardStep = firstCard
       ? firstCard.offsetWidth + Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0")
       : track.clientWidth;
-    track.scrollTo({ left: nextIndex * cardStep, behavior: "smooth" });
+    const nextLeft = Math.min(nextIndex * cardStep, track.scrollWidth - track.clientWidth);
+    const horizontalRoom = track.scrollWidth - track.clientWidth;
+    const scrollRange = section ? section.offsetHeight - (stickyRef.current?.offsetHeight ?? window.innerHeight) : 0;
+    if (section && horizontalRoom > 0 && scrollRange > 0) {
+      const pinTop = stickyRef.current ? Number.parseFloat(getComputedStyle(stickyRef.current).top) || 0 : 0;
+      const sectionTop = window.scrollY + section.getBoundingClientRect().top - pinTop;
+      window.scrollTo({ top: sectionTop + (nextLeft / horizontalRoom) * scrollRange, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    } else {
+      track.scrollTo({ left: nextLeft, behavior: "smooth" });
+    }
     setActiveIndex(nextIndex);
   }
 
@@ -110,47 +184,23 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
     mobileVideo.webkitEnterFullscreen?.();
   }
 
-  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
-    const track = trackRef.current;
-    if (!track) return;
-    if ((event.target as HTMLElement).closest("video, button")) return;
-    dragStartX.current = event.clientX;
-    dragStartScroll.current = track.scrollLeft;
-    track.setPointerCapture(event.pointerId);
-  }
-
-  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    const track = trackRef.current;
-    if (!track || dragStartX.current === null) return;
-    track.scrollLeft = dragStartScroll.current - (event.clientX - dragStartX.current);
-  }
-
-  function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
-    const track = trackRef.current;
-    if (!track || dragStartX.current === null) return;
-    dragStartX.current = null;
-    if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
-    updateActiveIndex();
-  }
-
   if (!testimonials.length) return null;
 
   return (
-    <div className="cinema-testimonials" role="region" aria-label="Depoimentos de clientes MyWay" aria-roledescription="carrossel">
-      <div className="cinema-testimonials-heading">
-        <p className="eyebrow">Depoimentos</p>
-        <h2>Experiências que continuam depois do encontro.</h2>
-        <p>Quem participa da MyWay leva novas escolhas, conversas e formas de liderar para a vida real.</p>
+    <div ref={sectionRef} className={styles.results} role="region" aria-label="Depoimentos de clientes MyWay" aria-roledescription="carrossel">
+      <div ref={stickyRef} className={styles.sticky}>
+      <div className={styles.heading}>
+        <h2>Resultados</h2>
+        <p>Histórias de quem viveu a experiência.</p>
       </div>
       <div
         ref={trackRef}
-        className="cinema-horizontal-track"
+        className={styles.track}
+        data-youtube={testimonials.every((testimonial) => Boolean(testimonial.youtubeId))}
         onScroll={updateActiveIndex}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
         onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          if (event.key === "ArrowLeft" || event.key === "ArrowRight") event.preventDefault();
           if (event.key === "ArrowLeft") goTo(activeIndex - 1);
           if (event.key === "ArrowRight") goTo(activeIndex + 1);
         }}
@@ -161,11 +211,39 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
           <article
             data-testimonial-card
             key={testimonial.src}
-            className={index === activeIndex ? "is-active" : undefined}
+            className={styles.card}
+            data-active={index === activeIndex}
+            onClick={() => setActiveIndex(index)}
+            onFocusCapture={() => setActiveIndex(index)}
             aria-label={`${index + 1} de ${testimonials.length}: ${testimonial.name ?? testimonial.title ?? "Depoimento"}`}
           >
-            <div className="cinema-video-shell">
-              <video
+            <div className={styles.videoShell} data-youtube={Boolean(testimonial.youtubeId)} data-playing={testimonial.youtubeId && playingYoutubeIndex === index && activeIndex === index ? "true" : undefined}>
+              {testimonial.youtubeId ? (
+                playingYoutubeIndex === index && activeIndex === index ? (
+                  <iframe
+                    className={styles.youtubePlayer}
+                    src={`https://www.youtube-nocookie.com/embed/${testimonial.youtubeId}?autoplay=1&playsinline=1&rel=0`}
+                    title={testimonial.name ?? testimonial.title ?? `Depoimento ${index + 1}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                ) : (
+                  <button
+                    className={styles.youtubePreview}
+                    type="button"
+                    aria-label={`Assistir ${testimonial.name ?? testimonial.title ?? `depoimento ${index + 1}`}`}
+                    onClick={() => {
+                      setActiveIndex(index);
+                      setPlayingYoutubeIndex(index);
+                      requestAudioFocus(`${audioGroupId}-${index}`);
+                    }}
+                  >
+                    <Image src={`https://i.ytimg.com/vi/${testimonial.youtubeId}/hqdefault.jpg`} alt="" fill sizes="(max-width: 600px) 88vw, 44vw" unoptimized />
+                    <span className={styles.playIcon} aria-hidden="true">▶</span>
+                  </button>
+                )
+              ) : <video
                 ref={(video) => { videoRefs.current[index] = video; }}
                 controls
                 autoPlay={index === activeIndex}
@@ -174,39 +252,34 @@ export function CinematicTestimonials({ testimonials }: CinematicTestimonialsPro
                 playsInline
                 preload={index === activeIndex ? "auto" : "metadata"}
                 src={testimonial.src}
+                onPlay={() => setActiveIndex(index)}
                 onClick={(event) => {
                   if (event.currentTarget === event.target) openFullscreen(event.currentTarget);
                 }}
                 aria-label={`Reproduzir ${testimonial.title ?? "depoimento"}. Clique no vídeo para abrir em tela cheia.`}
-              />
-              <div className="cinema-testimonial-overlay" aria-hidden="true">
+              />}
+              {(!testimonial.youtubeId || testimonial.name) && <div className={styles.caption}>
                 <div>
                   <strong>{testimonial.name ?? testimonial.title ?? `Depoimento ${String(index + 1).padStart(2, "0")}`}</strong>
                   <span>{testimonial.company ?? testimonial.context ?? "Aluno MyWay"}</span>
                 </div>
-                <small>Clique para assistir</small>
-              </div>
-              <button className="cinema-volume-control" type="button" onClick={() => toggleMute(index)} aria-label={mutedByIndex[index] ? "Ativar som do depoimento" : "Silenciar depoimento"}>{mutedByIndex[index] ? "Ativar som" : "Silenciar"}</button>
+              </div>}
+              {!testimonial.youtubeId && <button className={styles.volume} type="button" onClick={() => toggleMute(index)} aria-label={mutedByIndex[index] ? "Ativar som do depoimento" : "Silenciar depoimento"}>{mutedByIndex[index] ? "Ativar som" : "Silenciar"}</button>}
             </div>
           </article>
         ))}
       </div>
 
-      <div className="cinema-controls" aria-label="Controles dos depoimentos">
-        <button type="button" onClick={() => goTo(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Depoimento anterior"></button>
-        <div>
-          {testimonials.map((testimonial, index) => (
-            <button key={testimonial.src} type="button" className={index === activeIndex ? "is-active" : undefined} onClick={() => goTo(index)} aria-label={`Ir para ${testimonial.name ?? testimonial.title ?? "depoimento"}`} aria-current={index === activeIndex ? "true" : undefined} />
-          ))}
+      <div className={styles.footer}>
+      <p className={styles.statement}>Quando as escolhas mudam,<br />novos caminhos começam.</p>
+      <div className={styles.controls} aria-label="Controles dos depoimentos">
+        <span className={styles.counter} aria-live="polite">{String(activeIndex + 1).padStart(2, "0")} / {String(testimonials.length).padStart(2, "0")}</span>
+        <div className={styles.arrows}>
+          <button type="button" onClick={() => goTo(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Depoimento anterior">←</button>
+          <button type="button" onClick={() => goTo(activeIndex + 1)} disabled={activeIndex === lastIndex} aria-label="Próximo depoimento">→</button>
         </div>
-        <button type="button" onClick={() => goTo(activeIndex + 1)} disabled={activeIndex === lastIndex} aria-label="Proximo depoimento"></button>
       </div>
-      <div className="cinema-testimonials-cta">
-        <div>
-          <p className="eyebrow">A sua próxima virada</p>
-          <h3>Você também pode fazer parte dessa transformação.</h3>
-        </div>
-        <a href="https://wa.me/5551993490339" target="_blank" rel="noreferrer">Candidatar-se <span aria-hidden="true">✦</span></a>
+      </div>
       </div>
     </div>
   );
