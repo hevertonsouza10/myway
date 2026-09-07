@@ -1,0 +1,115 @@
+.results { position: relative; width: 100%; min-width: 0; min-height: 100svh; margin: 0; color: #f3f1ed; font-family: var(--font-aktiv), Arial, sans-serif; }
+.results .sticky { position: sticky; top: 0; isolation: isolate; display: flex; flex-direction: column; justify-content: center; width: 100%; height: 100svh; min-height: 34rem; padding: clamp(1.5rem, 4vh, 3.5rem) clamp(1.25rem, 5vw, 6rem); overflow: hidden; }
+.results .sticky::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: max(120rem, 200vw);
+  aspect-ratio: 1;
+  background: linear-gradient(125deg, rgb(255 255 255 / 2%) 15%, rgb(255 255 255 / 8%) 48%, rgb(255 255 255 / 4%) 72%, transparent 94%);
+  -webkit-mask: url('/brand/logo grande.svg') center / contain no-repeat;
+  mask: url('/brand/logo grande.svg') center / contain no-repeat;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.results .heading, .results .track, .results .footer { position: relative; z-index: 1; }
+.results .heading { width: min(100%, 86rem); margin: 0 auto 1rem; padding-bottom: clamp(1rem, 2vh, 1.75rem); border-bottom: 1px solid rgb(243 241 237 / 22%); }
+.results .heading h2 { margin: 0; max-width: none; color: #f3f1ed; font-family: var(--font-aktiv), Arial, sans-serif; font-size: clamp(2.6rem, 5.5vw, 5.5rem); font-weight: 400; line-height: 1.05; letter-spacing: -.055em; }
+.results .heading p { margin: .9rem 0 0; color: #c0cfe1; font-size: clamp(.9rem, 1.2vw, 1.05rem); line-height: 1.5; }
+.results .track { display: flex; align-items: start; gap: clamp(1rem, 2vw, 1.75rem); width: min(100%, 86rem); min-width: 0; margin: 0 auto; overflow-x: hidden; overflow-y: hidden; padding: .5rem 0 .75rem; scroll-snap-type: none; scroll-padding-left: 0; scrollbar-width: none; touch-action: pan-x pan-y; overscroll-behavior-x: contain; }
+.results .track::-webkit-scrollbar { display: none; }
+.results .track::after { content: ''; flex: 0 0 max(0px, calc(100% - clamp(15rem, 26vw, 23rem) - clamp(1rem, 2vw, 1.75rem))); }
+.results .card { flex: 0 0 clamp(15rem, 26vw, 23rem); min-width: 0; margin: 0; padding: 0; scroll-snap-align: start; }
+.results .videoShell { position: relative; width: 100%; aspect-ratio: 9 / 13; background: #111827; overflow: hidden; border-radius: 4px; }
+.results .videoShell { transform: scale(1); transform-origin: center; transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
+@media (hover: hover) {
+  .results .videoShell { transform: scale(.94); }
+  .results .card:hover .videoShell, .results .card:focus-within .videoShell { transform: scale(1); }
+  .results .card:hover .caption { opacity: 1; transform: translateY(0); }
+}
+.results .videoShell video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; opacity: 1; }
+.results .youtubePreview { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: #111827; cursor: pointer; }
+.results .youtubePreview img { object-fit: cover; }
+.results .playIcon { position: absolute; top: 50%; left: 50%; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; padding-left: .2rem; transform: translate(-50%, -50%); border: 1px solid rgb(243 241 237 / 65%); border-radius: 50%; color: #f3f1ed; background: rgb(17 24 39 / 70%); font-size: 1.2rem; }
+.results .youtubePlayer { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.results .videoShell[data-playing="true"] .caption { display: none; }
+.results .videoShell[data-playing="true"] { transform: none; }
+.results .track[data-youtube="true"] .card { flex-basis: clamp(20rem, 44vw, 42rem); }
+.results .track[data-youtube="true"]::after { flex-basis: max(0px, calc(100% - clamp(20rem, 44vw, 42rem) - clamp(1rem, 2vw, 1.75rem))); }
+.results .videoShell[data-youtube="true"] { aspect-ratio: 16 / 9; }
+.results .videoShell[data-youtube="true"] .caption { padding-bottom: 1rem; }
+.results .caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 3.5rem 1rem 3.95rem; background: linear-gradient(to bottom, transparent 0%, rgb(17 24 39 / 55%) 45%, rgb(17 24 39 / 85%) 100%); pointer-events: none; opacity: 0; transform: translateY(.4rem); transition: opacity 220ms ease, transform 220ms ease; }
+.results .card[data-active="true"] .caption, .results .card:focus-within .caption { opacity: 1; transform: translateY(0); }
+.results .caption strong { display: block; font-size: .85rem; font-weight: 500; line-height: 1.4; }
+.results .caption span { display: block; margin-top: .2rem; color: #d4dce6; font-size: .7rem; line-height: 1.4; }
+.results .volume { position: absolute; top: .75rem; right: .75rem; min-height: 44px; padding: .5rem .8rem; border: 1px solid rgb(243 241 237 / 40%); border-radius: 2px; background: rgb(17 24 39 / 80%); color: #f3f1ed; font: inherit; font-size: .7rem; cursor: pointer; }
+.results .controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: min(100%, 86rem); margin: .75rem auto 0; padding-top: .75rem; border-top: 1px solid rgb(243 241 237 / 22%); }
+.results .counter { font-family: var(--font-aktiv), Arial, sans-serif; font-variant-numeric: tabular-nums; color: #c0cfe1; font-size: .75rem; letter-spacing: .08em; }
+.results .arrows { display: flex; gap: .6rem; }
+.results .arrows button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(243 241 237 / 35%); border-radius: 50%; background: transparent; color: #f3f1ed; font: inherit; font-size: 1.3rem; cursor: pointer; }
+.results .arrows button:disabled { opacity: .35; cursor: default; }
+.results .arrows button:hover:not(:disabled) { background: rgb(243 241 237 / 12%); }
+.results button:focus-visible, .results .track:focus-visible { outline: 2px solid #f3f1ed; outline-offset: 3px; }
+.results .statement { width: min(100%, 86rem); margin: clamp(.75rem, 2vh, 1.5rem) auto 0; color: #f3f1ed; font-family: var(--font-binoma), var(--font-aktiv), sans-serif; font-size: clamp(1.45rem, 2.6vw, 2.8rem); font-weight: 400; line-height: 1.05; letter-spacing: -.035em; }
+@media (max-width: 600px) {
+  .results .sticky { min-height: 31rem; }
+  .results .heading h2 { font-size: clamp(2.4rem, 12vw, 3.3rem); }
+  .results .heading p { margin-top: .45rem; }
+  .results .track[data-youtube="true"] .card { flex-basis: 88%; }
+  .results .track[data-youtube="true"]::after { flex-basis: max(0px, calc(12% - 1rem)); }
+  .results .card { flex-basis: 78%; }
+  .results .track::after { flex-basis: calc(22% - 1rem); }
+}
+@media (max-height: 700px) and (min-width: 601px) {
+  .results .sticky { padding-block: 1.25rem; }
+  .results .heading { margin-bottom: .35rem; padding-bottom: .65rem; }
+  .results .heading h2 { font-size: clamp(2.5rem, 4.5vw, 4.25rem); }
+  .results .heading p { margin-top: .35rem; }
+  .results .track[data-youtube="true"] .card { flex-basis: clamp(18rem, 35vw, 31rem); }
+  .results .track[data-youtube="true"]::after { flex-basis: max(0px, calc(100% - clamp(18rem, 35vw, 31rem) - clamp(1rem, 2vw, 1.75rem))); }
+  .results .controls { margin-top: .25rem; padding-top: .5rem; }
+  .results .arrows button { width: 38px; height: 38px; }
+  .results .statement { margin-top: .4rem; font-size: clamp(1.25rem, 2vw, 2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .results .videoShell, .results .caption { transition: none; }
+  .results .videoShell { transform: none; }
+  .results .caption { transform: none; }
+}
+/* Keep the pinned chapter compact and let the rail reach the viewport edge. */
+.results { min-height: 0; --gutter: max(clamp(1.25rem, 5vw, 6rem), calc((100vw - 86rem) / 2)); }
+.results .sticky { top: 0; height: auto; min-height: 0; justify-content: flex-start; padding: clamp(2rem, 5vh, 4rem) 0; overflow: clip; }
+.results .heading, .results .controls, .results .statement { width: calc(100% - var(--gutter) * 2); margin-left: var(--gutter); margin-right: var(--gutter); flex-shrink: 0; }
+.results .track { width: 100%; margin-left: 0; margin-right: 0; flex-shrink: 0; touch-action: pan-y; }
+.results .track::after { display: none; }
+.results .track { box-sizing: border-box; padding-inline: var(--gutter); }
+.results .track[data-youtube="true"] .card { flex-basis: min(44vw, 42rem, calc((100svh - 19rem) * 16 / 9)); }
+@media (max-width: 600px) {
+  .results .track[data-youtube="true"] .card { flex-basis: 84vw; }
+}
+/* Quiet hierarchy: media first, one shared closing row. */
+.results .heading { border: 0; padding-bottom: 0; margin-bottom: clamp(1.25rem, 3vh, 2rem); }
+.results .heading h2 { font-size: clamp(2.6rem, 4.8vw, 4.75rem); }
+.results .heading p { margin-top: .6rem; font-size: clamp(.85rem, 1.1vw, 1rem); color: #bccce0; }
+.results .track { gap: clamp(1rem, 2vw, 1.75rem); padding-top: .35rem; padding-bottom: .35rem; }
+.results .videoShell { border-radius: 3px; }
+.results .playIcon { width: 3rem; height: 3rem; border-color: rgb(243 241 237 / 55%); background: rgb(17 24 39 / 30%); font-size: 1rem; transition: background 200ms ease, border-color 200ms ease; }
+.results .youtubePreview:hover .playIcon { border-color: #f3f1ed; background: rgb(17 24 39 / 65%); }
+.results .footer { display: flex; align-items: center; justify-content: space-between; gap: 2rem; width: calc(100% - var(--gutter) * 2); margin: clamp(1.25rem, 3vh, 2rem) var(--gutter) 0; }
+.results .footer .statement { width: auto; margin: 0; font-size: clamp(1.35rem, 2.15vw, 2.1rem); line-height: 1.15; letter-spacing: -.035em; }
+.results .footer .controls { width: auto; margin: 0; padding: 0; border: 0; gap: 1.25rem; flex-shrink: 0; }
+.results .counter { font-size: .7rem; letter-spacing: .06em; }
+.results .arrows { gap: .2rem; }
+.results .arrows button { width: 44px; height: 44px; border: 0; border-radius: 50%; font-size: 1.5rem; }
+.results .arrows button:disabled { opacity: .25; }
+@media (max-width: 600px) {
+  .results .footer { align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+  .results .footer .controls { margin-left: auto; }
+  .results .footer .statement { font-size: 1.35rem; }
+  .results .sticky::before { width: max(70rem, 310vw); opacity: .7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .results .playIcon { transition: none; }
+}
