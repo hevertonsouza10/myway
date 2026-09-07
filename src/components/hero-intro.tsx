@@ -20,40 +20,16 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
   const discoverHref = variant === "institutional" ? "#sobre" : "#descobrir";
 
   useEffect(() => {
-    const intro = window.setTimeout(() => {
+    const intro = window.setTimeout(() => setIsIntroDone(true), 2200);
+    const fallback = window.setTimeout(() => {
       setIsVideoReady(true);
       setIsIntroDone(true);
-    }, 2000);
+    }, 6500);
 
     return () => {
       window.clearTimeout(intro);
+      window.clearTimeout(fallback);
     };
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
-    const rootOverflow = root.style.overflow;
-    const bodyOverflow = body.style.overflow;
-    const preventScroll = (event: Event) => event.preventDefault();
-    const preventScrollKeys = (event: KeyboardEvent) => {
-      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " ", "Tab"].includes(event.key)) event.preventDefault();
-    };
-    root.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    window.addEventListener("wheel", preventScroll, { passive: false });
-    window.addEventListener("touchmove", preventScroll, { passive: false });
-    window.addEventListener("keydown", preventScrollKeys);
-    const unlock = () => {
-      root.style.overflow = rootOverflow;
-      body.style.overflow = bodyOverflow;
-      window.removeEventListener("wheel", preventScroll);
-      window.removeEventListener("touchmove", preventScroll);
-      window.removeEventListener("keydown", preventScrollKeys);
-    };
-    // Keep scrolling locked through the existing cinematic exit transition.
-    const timer = window.setTimeout(unlock, 3100);
-    return () => { window.clearTimeout(timer); unlock(); };
   }, []);
 
   useEffect(() => {
@@ -83,12 +59,7 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
 
     if (!video.muted) {
       requestAudioFocus(audioId);
-      try {
-        await video.play();
-      } catch {
-        video.muted = true;
-        setIsMuted(true);
-      }
+      await video.play();
     }
   }
 
@@ -98,9 +69,6 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
       onPointerMove={handlePointerMove}
     >
       <div className="preloader" aria-hidden={isReady}>
-        <video className="preloader-video" autoPlay loop muted playsInline preload="auto">
-          <source src="/media/preloader-intro.mp4" type="video/mp4" />
-        </video>
         <div className="preloader-logo">
           <Image
             src="/brand/myway-logo-white.png"
