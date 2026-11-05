@@ -8,11 +8,11 @@ import { CinematicTestimonials } from "@/components/cinematic-testimonials";
 import { HeroIntro } from "@/components/hero-intro";
 import { InstitutionalAboutExperience } from "@/components/institutional-about-experience";
 import { HorizontalPhotoRail } from "@/components/horizontal-photo-rail";
-import aulaAbertura from "../../marca/fotosaula/DSC08659.jpg";
-import aulaEmCirculo from "../../marca/fotosaula/DSC08667.jpg";
-import aulaParticipantes from "../../marca/fotosaula/DSC08677.jpg";
-import aulaFacilitador from "../../marca/fotosaula/DSC08693.jpg";
-import aulaTroca from "../../marca/fotosaula/DSC08722.jpg";
+import aulaAbertura from "../../public/media/aulas/dsc08659.webp";
+import aulaEmCirculo from "../../public/media/aulas/dsc08667.webp";
+import aulaParticipantes from "../../public/media/aulas/dsc08677.webp";
+import aulaFacilitador from "../../public/media/aulas/dsc08693.webp";
+import aulaTroca from "../../public/media/aulas/dsc08722.webp";
 import aulaRodaNova from "../../public/media/aulas/aula-roda.webp";
 
 type Unit = { city: string; street: string; locality: string; cep: string; phone: string; phoneHref: string; mapUrl: string; routeUrl: string; embedUrl: string; reviewsUrl: string };
