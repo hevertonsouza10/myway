@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const leadershipLinks = [
   { href: "#sobre", label: "Sobre", icon: "about" },
@@ -19,7 +19,9 @@ const institutionalLinks = [
 ];
 
 const institutionalMobileLinks = [
-  ...institutionalLinks,
+  institutionalLinks[0],
+  { href: "#sobre", label: "Sobre MyWay", icon: "about" },
+  ...institutionalLinks.slice(1),
   { href: "#contato", label: "Contato", icon: "contact" },
 ];
 
@@ -36,70 +38,25 @@ function getIdFromHref(href: string) {
   return href.startsWith("#") ? href.slice(1) : href;
 }
 
-function NavIcon({ name }: { name: string }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      {name === "about" ? (
-        <>
-          <circle cx="12" cy="12" r="7.2" />
-          <path d="M12 8.4v7.2" />
-          <path d="M8.4 12h7.2" />
-        </>
-      ) : null}
-      {name === "training" ? (
-        <>
-          <path d="M4.5 7.5h15" />
-          <path d="M6.8 7.5v10.2h10.4V7.5" />
-          <path d="M9 12h6" />
-        </>
-      ) : null}
-      {name === "brands" ? (
-        <>
-          <path d="M6.4 6.4h4.6v4.6H6.4z" />
-          <path d="M13 6.4h4.6v4.6H13z" />
-          <path d="M6.4 13h4.6v4.6H6.4z" />
-          <path d="M13 13h4.6v4.6H13z" />
-        </>
-      ) : null}
-      {name === "testimonials" ? (
-        <>
-          <path d="M5.5 6.8h13v8.7h-5.4L9 18.3v-2.8H5.5z" />
-          <path d="M9 10.2h6" />
-          <path d="M9 12.7h3.8" />
-        </>
-      ) : null}
-      {name === "unit" ? (
-        <>
-          <path d="M12 20s6-5 6-10a6 6 0 0 0-12 0c0 5 6 10 6 10z" />
-          <circle cx="12" cy="10" r="2.1" />
-        </>
-      ) : null}
-      {name === "contact" ? (
-        <>
-          <path d="M4.8 7.2h14.4v9.6H4.8z" />
-          <path d="m5.5 8 6.5 5 6.5-5" />
-        </>
-      ) : null}
-      {name === "method" ? (
-        <>
-          <path d="M7 5.8h10" />
-          <path d="M7 12h10" />
-          <path d="M7 18.2h10" />
-          <path d="M5 5.8h.1" />
-          <path d="M5 12h.1" />
-          <path d="M5 18.2h.1" />
-        </>
-      ) : null}
-    </svg>
-  );
-}
-
 export function SiteHeader({ variant = "leadership" }: SiteHeaderProps) {
   const links = variant === "institutional" ? institutionalLinks : leadershipLinks;
   const mobileLinks =
     variant === "institutional" ? institutionalMobileLinks : leadershipMobileLinks;
   const observedLinks =
     variant === "institutional" ? institutionalMobileLinks : leadershipMobileLinks;
+  const menuRef = useRef<HTMLDialogElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const media = window.matchMedia("(min-width: 801px)");
+    const closeOnDesktop = () => { if (media.matches) menuRef.current?.close(); };
+    media.addEventListener("change", closeOnDesktop);
+    return () => { document.body.style.overflow = previous; media.removeEventListener("change", closeOnDesktop); };
+  }, [menuOpen]);
+
   const [activeId, setActiveId] = useState(getIdFromHref(links[0]?.href ?? ""));
 
   useEffect(() => {
@@ -161,10 +118,10 @@ export function SiteHeader({ variant = "leadership" }: SiteHeaderProps) {
           })}
           <Link
             className={`nav-contact ${activeId === "contato" ? "is-active" : ""}`}
-            href="#contato"
+            href="/candidatura"
             aria-current={activeId === "contato" ? "true" : undefined}
           >
-            <span>Contato</span>
+            <span>Candidatar-se</span>
             <i aria-hidden="true">&#8594;</i>
           </Link>
         </nav>
@@ -175,26 +132,25 @@ export function SiteHeader({ variant = "leadership" }: SiteHeaderProps) {
         <i aria-hidden="true">&#8594;</i>
       </Link>
 
-      <nav className="mobile-nav" aria-label="Navegação rápida">
-        {mobileLinks.map((link) => {
-          const id = getIdFromHref(link.href);
-          const isActive = id === activeId;
-
-          return (
-            <Link
-              href={link.href}
-              key={link.href}
-              className={isActive ? "is-active" : undefined}
-              aria-current={isActive ? "true" : undefined}
-              aria-label={link.label}
-              title={link.label}
-            >
-              <NavIcon name={link.icon} />
-              <span>{link.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="mobile-header-actions">
+        <Link className="mobile-contact-button" href="/candidatura">Candidatar-se</Link>
+        <button className="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => { menuRef.current?.showModal(); setMenuOpen(true); }}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+      </div>
+      <dialog ref={menuRef} id="mobile-menu" className="mobile-menu-dialog" aria-label="Menu de navegação" onClose={() => setMenuOpen(false)}>
+        <div className="mobile-menu-panel">
+          <div className="mobile-menu-heading"><Image className="mobile-menu-logo" src="/brand/myway-logo-white.png" alt="MyWay - Lidere suas escolhas" width={176} height={64} /><button type="button" autoFocus aria-label="Fechar menu" onClick={() => menuRef.current?.close()}>×</button></div>
+          <nav className="mobile-menu-links" aria-label="Seções do site">
+            {mobileLinks.map((link, index) => <Link key={link.href} href={link.href} onClick={() => menuRef.current?.close()}><small>{String(index + 1).padStart(2, "0")}</small>{link.label}</Link>)}
+            <Link href="/area-do-aluno" onClick={() => menuRef.current?.close()}>Área do aluno</Link>
+          </nav>
+          <div className="mobile-menu-footer">
+            <Link className="mobile-menu-contact" href="/candidatura" onClick={() => menuRef.current?.close()}>Candidatar-se</Link>
+            <div className="mobile-menu-socials"><a href="https://www.instagram.com/mywaytreinamentos/" target="_blank" rel="noreferrer">Instagram</a><a href="https://www.youtube.com/channel/UCDTPq1wg3nrgNN_DtXMAZWA/videos" target="_blank" rel="noreferrer">YouTube</a><a href="https://wa.me/5551993601857" target="_blank" rel="noreferrer">WhatsApp</a></div>
+          </div>
+        </div>
+      </dialog>
     </header>
   );
 }

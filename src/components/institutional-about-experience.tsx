@@ -17,9 +17,50 @@ const statements = [
 export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExperienceProps) {
   const filmRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const expandedVideoRef = useRef<HTMLVideoElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
+  const resumeInlineRef = useRef(false);
+  const previousOverflowRef = useRef("");
   const [statement, setStatement] = useState(-1);
   const [isMuted, setIsMuted] = useState(true);
   const audioId = useId();
+
+  const openFilm = () => {
+    const inline = videoRef.current;
+    const expanded = expandedVideoRef.current;
+    const dialog = dialogRef.current;
+    if (!inline || !expanded || !dialog || dialog.open) return;
+    resumeInlineRef.current = !inline.paused;
+    inline.pause();
+    expanded.currentTime = inline.currentTime;
+    expanded.muted = inline.muted;
+    expanded.volume = inline.volume;
+    previousOverflowRef.current = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    if (!expanded.muted) requestAudioFocus(audioId);
+    void expanded.play().catch(() => {});
+  };
+
+  const closeFilm = () => {
+    const expanded = expandedVideoRef.current;
+    const inline = videoRef.current;
+    if (expanded && inline) {
+      expanded.pause();
+      inline.currentTime = expanded.currentTime;
+      inline.muted = expanded.muted;
+      inline.volume = expanded.volume;
+      setIsMuted(expanded.muted);
+      if (resumeInlineRef.current) void inline.play().catch(() => {});
+    }
+    document.body.style.overflow = previousOverflowRef.current;
+    openButtonRef.current?.focus({ preventScroll: true });
+  };
+
+  useEffect(() => () => {
+    if (dialogRef.current?.open) document.body.style.overflow = previousOverflowRef.current;
+  }, []);
 
   useEffect(() => {
     const updateProgress = () => {
@@ -47,6 +88,7 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
       const source = (event as CustomEvent<string>).detail;
       if (source === audioId || !videoRef.current) return;
       videoRef.current.muted = true;
+      if (expandedVideoRef.current) expandedVideoRef.current.muted = true;
       setIsMuted(true);
     };
 
@@ -79,10 +121,11 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
             loop
             playsInline
             preload="metadata"
-            src="/media/institucional/sobre-myway.mp4"
+            src="/media/institucional/img8354.mp4"
             aria-label="Vídeo institucional da MyWay"
           />
           <div className="institutional-film-shade" aria-hidden="true" />
+          <button ref={openButtonRef} className="institutional-film-open" type="button" onClick={openFilm} aria-label="Expandir vídeo institucional" aria-haspopup="dialog" />
           <div className="institutional-film-meta">
             <span>01 / Sobre a MyWay</span>
             <span>Experiência institucional</span>
@@ -114,6 +157,11 @@ export function InstitutionalAboutExperience({ blocks }: InstitutionalAboutExper
           </div>
         </div>
       </div>
+
+      <dialog ref={dialogRef} className="institutional-video-dialog" aria-label="Vídeo institucional da MyWay" onClose={closeFilm}>
+        <button className="institutional-video-close" type="button" autoFocus onClick={() => dialogRef.current?.close()} aria-label="Fechar vídeo">×</button>
+        <video ref={expandedVideoRef} controls playsInline preload="metadata" src="/media/institucional/img8354.mp4" onVolumeChange={() => { if (expandedVideoRef.current && !expandedVideoRef.current.muted && dialogRef.current?.open) requestAudioFocus(audioId); }} />
+      </dialog>
 
       <div className="institutional-about-content">
         <div className="institutional-about-intro">

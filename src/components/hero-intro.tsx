@@ -14,22 +14,51 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [isIntroDone, setIsIntroDone] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isPreloaderGone, setIsPreloaderGone] = useState(false);
   const audioId = useId();
   const videoRef = useRef<HTMLVideoElement>(null);
   const isReady = isVideoReady && isIntroDone;
   const discoverHref = variant === "institutional" ? "#sobre" : "#descobrir";
 
   useEffect(() => {
-    const intro = window.setTimeout(() => setIsIntroDone(true), 2200);
-    const fallback = window.setTimeout(() => {
+    const intro = window.setTimeout(() => {
       setIsVideoReady(true);
       setIsIntroDone(true);
-    }, 6500);
+    }, 2000);
 
     return () => {
       window.clearTimeout(intro);
-      window.clearTimeout(fallback);
     };
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const rootOverflow = root.style.overflow;
+    const bodyOverflow = body.style.overflow;
+    const preventScroll = (event: Event) => event.preventDefault();
+    const preventScrollKeys = (event: KeyboardEvent) => {
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " ", "Tab"].includes(event.key)) event.preventDefault();
+    };
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    window.addEventListener("keydown", preventScrollKeys);
+    const unlock = () => {
+      root.style.overflow = rootOverflow;
+      body.style.overflow = bodyOverflow;
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
+      window.removeEventListener("keydown", preventScrollKeys);
+    };
+    // Keep scrolling locked through the existing cinematic exit transition.
+    const timer = window.setTimeout(() => {
+      unlock();
+      // Free the decoder once the preloader has fully faded out.
+      setIsPreloaderGone(true);
+    }, 3100);
+    return () => { window.clearTimeout(timer); unlock(); };
   }, []);
 
   useEffect(() => {
@@ -59,7 +88,12 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
 
     if (!video.muted) {
       requestAudioFocus(audioId);
-      await video.play();
+      try {
+        await video.play();
+      } catch {
+        video.muted = true;
+        setIsMuted(true);
+      }
     }
   }
 
@@ -69,6 +103,11 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
       onPointerMove={handlePointerMove}
     >
       <div className="preloader" aria-hidden={isReady}>
+        {!isPreloaderGone && (
+          <video className="preloader-video" autoPlay loop muted playsInline preload="auto" poster="/media/preloader-intro-poster.jpg">
+            <source src="/media/preloader-intro.mp4" type="video/mp4" />
+          </video>
+        )}
         <div className="preloader-logo">
           <Image
             src="/brand/myway-logo-white.png"
@@ -101,7 +140,7 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
       <SiteHeader variant={variant} />
 
       <aside className="hero-socials" aria-label="Redes sociais e contato">
-        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
+        <a href="https://www.instagram.com/mywaytreinamentos/" target="_blank" rel="noreferrer">
           <span aria-hidden="true">
             <svg viewBox="0 0 24 24">
               <rect x="4" y="4" width="16" height="16" rx="5" />
@@ -111,18 +150,16 @@ export function HeroIntro({ variant = "leadership" }: HeroIntroProps) {
           </span>
           Instagram
         </a>
-        <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+        <a href="https://www.youtube.com/channel/UCDTPq1wg3nrgNN_DtXMAZWA/videos" target="_blank" rel="noreferrer">
           <span aria-hidden="true">
             <svg viewBox="0 0 24 24">
-              <path d="M6.2 9.4v9.4" />
-              <path d="M6.2 6.1v.1" />
-              <path d="M10.4 18.8V9.4" />
-              <path d="M10.4 13.7c0-2.5 1.4-4.3 3.8-4.3 2.1 0 3.4 1.5 3.4 4v5.4" />
+              <rect x="3" y="5" width="18" height="14" rx="4" />
+              <path d="m10 9 5 3-5 3V9Z" />
             </svg>
           </span>
-          LinkedIn
+          YouTube
         </a>
-        <a href="#contato">
+        <a href="https://wa.me/5551993601857" target="_blank" rel="noreferrer">
           <span aria-hidden="true">
             <svg viewBox="0 0 24 24">
               <path d="M4 7.5h16v11H4z" />

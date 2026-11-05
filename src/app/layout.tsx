@@ -48,6 +48,9 @@ export const metadata: Metadata = {
   title: "MyWay | Lidere suas escolhas",
   description:
     "Treinamento presencial para transformar escolhas, relações e resultados.",
+  other: {
+    "facebook-domain-verification": "qlmkgdbdtmx0ewmlcmcooq1kvj1dsj",
+  },
 };
 
 export default function RootLayout({

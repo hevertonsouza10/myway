@@ -9,9 +9,14 @@ export default function StudentAreaPage() {
         A plataforma do aluno está planejada para uma próxima fase. Quando
         lançada, ela reunirá agenda, informações das aulas e materiais.
       </p>
-      <Link className="button button-light" href="/">
-        Voltar para o site
-      </Link>
+      <div className="future-actions">
+        <Link className="button button-light" href="/">
+          Voltar para o site
+        </Link>
+        <a className="button button-outline-light" href="https://wa.me/5551993601857" target="_blank" rel="noreferrer">
+          Contato · (51) 99360-1857
+        </a>
+      </div>
     </main>
   );
 }

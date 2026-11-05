@@ -21,3 +21,5 @@
 
 .vercel
 .env*
+tmp/
+marca/
