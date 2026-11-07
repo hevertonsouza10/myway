@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { trainings } from "@/content/trainings";
+
+// Conteúdo ainda provisório (ver src/content/trainings.ts): fora do Google até
+// as páginas oficiais dos treinamentos serem escritas.
+export const metadata: Metadata = { robots: { index: false, follow: true } };
 
 export function generateStaticParams() {
   return trainings.map(({ slug }) => ({ slug }));

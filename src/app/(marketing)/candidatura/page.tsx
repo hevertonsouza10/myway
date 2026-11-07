@@ -8,6 +8,7 @@ import styles from "@/components/candidatura-form.module.css";
 export const metadata: Metadata = {
   title: "Candidatura | MyWay",
   description: "Candidate-se a uma vaga na próxima turma da MyWay Treinamentos.",
+  alternates: { canonical: "/candidatura" },
 };
 
 export default function CandidaturaPage() {

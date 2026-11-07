@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { site } from "@/lib/site";
 import "./globals.css";
 
 const aktiv = localFont({
@@ -45,9 +46,23 @@ const binoma = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MyWay | Lidere suas escolhas",
-  description:
-    "Treinamento presencial para transformar escolhas, relações e resultados.",
+  metadataBase: new URL(site.url),
+  title: site.title,
+  description: site.description,
+  applicationName: site.shortName,
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: site.name,
+    title: site.title,
+    description: site.description,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.description,
+  },
   other: {
     "facebook-domain-verification": "qlmkgdbdtmx0ewmlcmcooq1kvj1dsj",
   },
