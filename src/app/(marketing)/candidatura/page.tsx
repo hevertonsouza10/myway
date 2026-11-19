@@ -19,10 +19,11 @@ export default function CandidaturaPage() {
           <Image className={styles.logo} src="/brand/myway-logo-white-footer.png" alt="MyWay" width={1168} height={352} priority />
         </Link>
         <p className={styles.eyebrow}>Candidatura</p>
-        <h1>Garanta sua vaga na próxima turma.</h1>
+        <h1>Faça parte da comunidade MyWay. Lidere suas escolhas.</h1>
         <p>
-          Preencha seus dados e nossa equipe entra em contato pelo WhatsApp
-          para conversar sobre a turma e os próximos passos.
+          Preencha seus dados e a nossa equipe entrará em contato para agendar
+          uma reunião presencial ou online para tirar dúvidas e informar os
+          próximos passos.
         </p>
       </section>
       <Suspense>

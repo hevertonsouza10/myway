@@ -33,7 +33,8 @@ export const benefitStats = [
   { value: "MyWay", label: "NETWORK DE MENTALIDADE · COMUNIDADE MYWAY" },
 ];
 
-export const partnerBrands = [
+// url opcional: quando preenchida, o logo vira link para o site da marca (abre em nova aba).
+export const partnerBrands: { name: string; logo: string; url?: string }[] = [
   { name: "Bergstell", logo: "bergstell" },
   { name: "HF Madeiras", logo: "hf-madeiras" },
   { name: "Madelprint", logo: "madelprint" },
@@ -44,6 +45,7 @@ export const partnerBrands = [
   { name: "Grupo Vargas", logo: "grupo-vargas" },
   { name: "Grupo Limbermaq", logo: "limbermaq" },
   { name: "Ávila Supermercados", logo: "avila" },
+  { name: "Coxilha Veículos", logo: "coxilha" },
 ];
 
 export const videoTestimonials = [

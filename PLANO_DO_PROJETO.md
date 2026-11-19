@@ -38,7 +38,6 @@ Usar a identidade existente como fonte oficial:
 - branco: `#ffffff`;
 - quase preto: `#111827`;
 - off-white: `#f3f1ed`;
-- verde de apoio: `#1d5b5b`;
 - Binoma para títulos de impacto;
 - Aktiv Grotesk para textos, navegação e interface.
 
